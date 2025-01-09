@@ -1,16 +1,14 @@
 package com.desafio.hotel.dto.checkin;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class CheckinCreateDto {
     private Long guestId;
     private LocalDateTime dataEntrada;
