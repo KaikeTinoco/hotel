@@ -1,86 +1,68 @@
 package com.desafio.hotel.services;
 
 import com.desafio.hotel.entity.checkout.Checkout;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.sql.Time;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
 public class CalculoEstadiaService {
 
-    public BigDecimal calcularTotalEstadias(List<Checkout> checkoutList){
-        BigDecimal totalEstadias = new BigDecimal(0);
-        for(Checkout checkout: checkoutList){
-            totalEstadias = totalEstadias.add(
-                    calcularValorEstadia(
-                            checkout.getDataEntrada(),
-                            checkout.getDataSaida(),
-                            checkout.isAdicionalVeiculo()));
-        }
-        return totalEstadias;
-    }
+    private static final BigDecimal VALOR_UTIL_SEM_CARRO = new BigDecimal("120");
+    private static final BigDecimal VALOR_UTIL_COM_CARRO = new BigDecimal("140");
+    private static final BigDecimal VALOR_FINAL_SEMANA_SEM_CARRO = new BigDecimal("150");
+    private static final BigDecimal VALOR_FINAL_SEMANA_COM_CARRO = new BigDecimal("170");
 
     public BigDecimal calcularValorEstadia(LocalDateTime dataEntrada,
-                                            LocalDateTime dataSaida,
-                                            boolean adicionalVeiculo){
-        BigDecimal valorTotal = new BigDecimal(0);
+                                           LocalDateTime dataSaida,
+                                           boolean adicionalVeiculo) {
+        long totalDias = ChronoUnit.DAYS.between(dataEntrada.toLocalDate(), dataSaida.toLocalDate());
+        long finaisDeSemana = contarFinaisDeSemana(dataEntrada, dataSaida);
+        long diasUteis = totalDias - finaisDeSemana;
 
-        if(adicionalVeiculo){
-            while(!(dataEntrada.isEqual(dataSaida))){
-                if(dataEntrada.getDayOfWeek() == DayOfWeek.SUNDAY
-                        || dataEntrada.getDayOfWeek() == DayOfWeek.SATURDAY){
-                    valorTotal = valorTotal.add(new BigDecimal("170"));
-                } else {
-                    valorTotal = valorTotal.add(new BigDecimal("140"));
-                }
-                dataEntrada = dataEntrada.plusDays(1);
-            }
-            if (checarHoraSaida(dataSaida)){
-                if(dataEntrada.getDayOfWeek() == DayOfWeek.SUNDAY
-                        || dataEntrada.getDayOfWeek() == DayOfWeek.SATURDAY){
-                    valorTotal = valorTotal.add(new BigDecimal("170"));
-                } else {
-                    valorTotal = valorTotal.add(new BigDecimal("140"));
-                }
-            }
-        } else{
-            while(!(dataEntrada.isEqual(dataSaida))){
-                if(dataEntrada.getDayOfWeek() == DayOfWeek.SUNDAY
-                        || dataEntrada.getDayOfWeek() == DayOfWeek.SATURDAY){
-                    valorTotal = valorTotal.add(new BigDecimal("150"));
-                } else {
-                    valorTotal = valorTotal.add(new BigDecimal("120"));
-                }
-                dataEntrada = dataEntrada.plusDays(1);
-            }
-            if (checarHoraSaida(dataSaida)){
-                if(dataEntrada.getDayOfWeek() == DayOfWeek.SUNDAY
-                        || dataEntrada.getDayOfWeek() == DayOfWeek.SATURDAY){
-                    valorTotal = valorTotal.add(new BigDecimal("150"));
-                } else {
-                    valorTotal = valorTotal.add(new BigDecimal("120"));
-                }
+        BigDecimal valorDiaUtil = adicionalVeiculo ? VALOR_UTIL_COM_CARRO : VALOR_UTIL_SEM_CARRO;
+        BigDecimal valorFinalDeSemana = adicionalVeiculo ? VALOR_FINAL_SEMANA_COM_CARRO : VALOR_FINAL_SEMANA_SEM_CARRO;
+
+        BigDecimal valorTotal = valorDiaUtil.multiply(BigDecimal.valueOf(diasUteis))
+                .add(valorFinalDeSemana.multiply(BigDecimal.valueOf(finaisDeSemana)));
+
+        if (checarHoraSaida(dataSaida)) {
+            if (dataSaida.getDayOfWeek() == DayOfWeek.SATURDAY || dataSaida.getDayOfWeek() == DayOfWeek.SUNDAY) {
+                valorTotal = valorTotal.add(valorFinalDeSemana);
+            } else {
+                valorTotal = valorTotal.add(valorDiaUtil);
             }
         }
-        return valorTotal;
 
+        return valorTotal;
     }
 
-    private boolean checarHoraSaida(LocalDateTime dataSaida){
+    private long contarFinaisDeSemana(LocalDateTime dataEntrada, LocalDateTime dataSaida) {
+        long finaisDeSemana = 0;
+        for (LocalDateTime data = dataEntrada; !data.toLocalDate().isAfter(dataSaida.toLocalDate());
+             data = data.plusDays(1)) {
+            if (data.getDayOfWeek() == DayOfWeek.SATURDAY || data.getDayOfWeek() == DayOfWeek.SUNDAY) {
+                finaisDeSemana++;
+            }
+        }
+        return finaisDeSemana;
+    }
+
+    private boolean checarHoraSaida(LocalDateTime dataSaida) {
         int hora = dataSaida.getHour();
         int minutos = dataSaida.getMinute();
-
-        if (hora >= 16 && minutos >= 30){
-            return true;
-        } else {
-            return false;
-        }
+        return hora >= 16 && minutos >= 30;
     }
 
-
+    public BigDecimal calcularTotalEstadias(List<Checkout> checkoutList) {
+        return checkoutList.parallelStream()
+                .map(checkout -> calcularValorEstadia(checkout.getDataEntrada(),
+                        checkout.getDataSaida(),
+                        checkout.isAdicionalVeiculo()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
 }
