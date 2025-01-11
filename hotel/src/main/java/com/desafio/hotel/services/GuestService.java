@@ -119,7 +119,9 @@ public class GuestService {
         return repository.findAll();
     }
 
-    public List<Guest> buscarHospedesDentroHotel() throws Exception {
-        return repository.findByDentroHotel(true).orElseThrow(() -> new Exception("não tem ninguem dentro do hotel!"));
+    public List<Guest> buscarHospedeDentroOuForaHotel(boolean dentroHotel){
+        return repository.findByDentroHotel(dentroHotel).get();
     }
+
+
 }

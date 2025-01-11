@@ -25,10 +25,6 @@ public class GuestController {
         return ResponseEntity.ok(guestService.buscarTodosHospedes());
     }
 
-    @GetMapping(path = "/buscaHospedesDentroHotel")
-    public ResponseEntity<List<Guest>> buscarHospedesDentroHotel() throws Exception {
-        return ResponseEntity.ok(guestService.buscarHospedesDentroHotel());
-    }
 
     @GetMapping(path = "/buscaHospedes")
     public ResponseEntity<List<Guest>> filtroDeBusca(@RequestParam(required = false) String nome,

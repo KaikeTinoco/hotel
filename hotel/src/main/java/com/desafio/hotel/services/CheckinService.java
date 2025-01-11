@@ -1,6 +1,7 @@
 package com.desafio.hotel.services;
 
 import com.desafio.hotel.dto.checkin.CheckinCreateDto;
+import com.desafio.hotel.dto.response.ResponseDTO;
 import com.desafio.hotel.entity.checkin.Checkin;
 import com.desafio.hotel.entity.guest.Guest;
 import com.desafio.hotel.repositories.CheckinRepository;
@@ -38,6 +39,8 @@ public class CheckinService {
     public Checkin findById(Long id) throws Exception {
         return repository.findById(id).orElseThrow(()-> new Exception("não há hospede com esse id"));
     }
+
+
 
 }
 

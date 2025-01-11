@@ -22,4 +22,6 @@ public class CheckinController {
     public ResponseEntity<String> deletarCheckin(@RequestParam Long id) throws Exception {
         return ResponseEntity.ok(checkinService.deletarCheckin(id));
     }
+
+
 }
