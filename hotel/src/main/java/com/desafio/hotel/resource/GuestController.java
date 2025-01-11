@@ -3,7 +3,6 @@ package com.desafio.hotel.resource;
 import com.desafio.hotel.dto.guest.GuestDto;
 import com.desafio.hotel.entity.guest.Guest;
 import com.desafio.hotel.services.GuestService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
