@@ -95,9 +95,7 @@ public class CheckoutService {
                             .build();
                     response.add(responseDTO);
                 }else{
-                    valorGastoTotal = todosCheckouts.stream()
-                            .map(Checkout::getValorTotal)
-                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+                    valorGastoTotal = calculoEstadiaService.calcularTotalEstadias(guest.getId(),todosCheckouts);
                     valorGastoAtual = todosCheckouts.get(todosCheckouts.size() - 1).getValorTotal();
                     ResponseDTO responseDTO = ResponseDTO.builder()
                             .guest(guest)

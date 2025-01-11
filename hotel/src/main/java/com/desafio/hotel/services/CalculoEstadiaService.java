@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class CalculoEstadiaService {
@@ -58,11 +58,31 @@ public class CalculoEstadiaService {
         return hora >= 16 && minutos >= 30;
     }
 
-    public BigDecimal calcularTotalEstadias(List<Checkout> checkoutList) {
-        return checkoutList.parallelStream()
-                .map(checkout -> calcularValorEstadia(checkout.getDataEntrada(),
-                        checkout.getDataSaida(),
-                        checkout.isAdicionalVeiculo()))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    // Map para armazenar o total acumulado por cliente
+    private final Map<Long, BigDecimal> totalPorCliente = new HashMap<>();
+
+    // Map para armazenar os IDs de checkouts processados por cliente
+    private final Map<Long, Set<Long>> checkoutsProcessadosPorCliente = new HashMap<>();
+
+    public BigDecimal calcularTotalEstadias(Long clienteId, List<Checkout> checkoutList) {
+        // Inicializa o Set de checkouts processados para o cliente, se necessário
+        checkoutsProcessadosPorCliente.putIfAbsent(clienteId, new HashSet<>());
+        Set<Long> checkoutsProcessados = checkoutsProcessadosPorCliente.get(clienteId);
+
+        // Obtém o total acumulado atual ou inicializa com ZERO
+        BigDecimal totalAtual = totalPorCliente.getOrDefault(clienteId, BigDecimal.ZERO);
+
+        for (Checkout checkout : checkoutList) {
+            // Soma apenas se o checkout ainda não foi processado
+            if (!checkoutsProcessados.contains(checkout.getId())) {
+                totalAtual = totalAtual.add(checkout.getValorTotal());
+                checkoutsProcessados.add(checkout.getId()); // Marca como processado
+            }
+        }
+
+        // Atualiza o total acumulado para o cliente
+        totalPorCliente.put(clienteId, totalAtual);
+        return totalAtual;
     }
 }
+
