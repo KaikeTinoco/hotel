@@ -15,8 +15,13 @@ import java.util.List;
 
 @Service
 public class GuestService {
+
+    private final GuestRepository repository;
+
     @Autowired
-    private GuestRepository repository;
+    public GuestService(GuestRepository repository) {
+        this.repository = repository;
+    }
 
     public Guest cadastrarHospede(GuestDto dto){
         try {

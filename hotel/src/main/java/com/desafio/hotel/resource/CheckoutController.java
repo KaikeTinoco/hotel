@@ -14,8 +14,12 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/checkout")
 public class CheckoutController {
-    @Autowired
-    private CheckoutService checkoutService;
+
+    private final CheckoutService checkoutService;
+
+    public CheckoutController(CheckoutService checkoutService) {
+        this.checkoutService = checkoutService;
+    }
 
 
     @PostMapping(path = "/criarCheckout")

@@ -17,18 +17,25 @@ import java.util.List;
 @Service
 public class CheckoutService {
 
-    @Autowired
-    private CheckoutRepository repository;
+
+    private final CheckoutRepository repository;
+
+
+    private final CheckinService checkinService; // Interface injection
+
+
+    private final CalculoEstadiaService calculoEstadiaService;
+
+
+    private final GuestService guestService;
 
     @Autowired
-    private CheckinService checkinService; // Interface injection
-
-    @Autowired
-    private CalculoEstadiaService calculoEstadiaService;
-
-    @Autowired
-    private GuestService guestService;
-
+    public CheckoutService(CheckoutRepository repository, CheckinService checkinService, CalculoEstadiaService calculoEstadiaService, GuestService guestService) {
+        this.repository = repository;
+        this.checkinService = checkinService;
+        this.calculoEstadiaService = calculoEstadiaService;
+        this.guestService = guestService;
+    }
 
 
     public Checkout criarCheckout(Long id) throws Exception {

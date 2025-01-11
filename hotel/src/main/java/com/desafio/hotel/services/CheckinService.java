@@ -14,11 +14,18 @@ import java.util.List;
 
 @Service
 public class CheckinService {
-    @Autowired
-    private CheckinRepository repository;
+
+    private final CheckinRepository repository;
+
+
+    private final GuestService guestService;
 
     @Autowired
-    private GuestService guestService;
+    public CheckinService(CheckinRepository repository, GuestService guestService) {
+        this.repository = repository;
+        this.guestService = guestService;
+    }
+
 
     public Checkin criarCheckin(CheckinCreateDto dto) {
         try {

@@ -12,8 +12,11 @@ import java.util.List;
 @RestController()
 @RequestMapping(path = "/guests")
 public class GuestController {
-    @Autowired
-    private GuestService guestService;
+    private final GuestService guestService;
+
+    public GuestController(GuestService guestService) {
+        this.guestService = guestService;
+    }
 
     @PostMapping(path = "/cadastro")
     public ResponseEntity<Guest> cadastrarHospede(@RequestBody GuestDto dto){
