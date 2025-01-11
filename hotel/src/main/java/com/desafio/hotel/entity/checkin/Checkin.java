@@ -31,6 +31,7 @@ public class Checkin {
     @NotNull(message = "dataEntrada não pode estar vazio!")
     private LocalDateTime dataEntrada;
 
+    @NotNull(message = "adicionalVeiculo não pode estar vazio!")
     private boolean adicionalVeiculo;
 
 

@@ -32,5 +32,6 @@ public class Guest {
     @NotNull(message = "telefone não pode estar vazio!")
     private String telefone;
 
+    @NotNull(message = "dentroHotel não pode estar vazio!")
     private boolean dentroHotel;
 }
