@@ -11,8 +11,5 @@ import java.util.Optional;
 @Repository
 public interface GuestRepository extends JpaRepository<Guest, Long>, JpaSpecificationExecutor<Guest> {
      Optional<Guest> findById(Long id);
-     Optional<Guest> findByNome(String nome);
-     Optional<Guest> findByDocumento(String documento);
-     Optional<Guest> findByTelefone(String telefone);
      Optional<List<Guest>> findByDentroHotel(boolean dentroHotel);
 }
