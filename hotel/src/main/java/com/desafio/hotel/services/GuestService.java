@@ -2,6 +2,8 @@ package com.desafio.hotel.services;
 
 import com.desafio.hotel.dto.guest.GuestDto;
 import com.desafio.hotel.entity.guest.Guest;
+import com.desafio.hotel.exceptions.BadRequestException;
+import com.desafio.hotel.exceptions.GuestNotFoundException;
 import com.desafio.hotel.repositories.GuestRepository;
 import com.desafio.hotel.specification.GuestSpecification;
 import com.desafio.hotel.specification.criteria.SearchCriteria;
@@ -17,13 +19,18 @@ public class GuestService {
     private GuestRepository repository;
 
     public Guest cadastrarHospede(GuestDto dto){
-        Guest guest = new Guest();
-        guest.setNome(dto.getNome());
-        guest.setDocumento(excluirTracosePontos(dto.getDocumento()));
-        guest.setTelefone(excluirTracosePontos(dto.getTelefone()));
-        guest.setDentroHotel(true);
-        salvarGuest(guest);
-        return guest;
+        try {
+            Guest guest = new Guest();
+            guest.setNome(dto.getNome());
+            guest.setDocumento(excluirTracosePontos(dto.getDocumento()));
+            guest.setTelefone(excluirTracosePontos(dto.getTelefone()));
+            guest.setDentroHotel(true);
+            salvarGuest(guest);
+            return guest;
+        } catch (BadRequestException e) {
+            throw new BadRequestException("Erro ao tentar salvar o hóspede, contate o  suporte");
+        }
+
     }
 
     public List<Guest> filtroDeBusca(String nome, String documento, String telefone){
@@ -91,18 +98,35 @@ public class GuestService {
         return !(nome == null && documento == null && telefone == null);
     }
 
-    public String deletarGuestById(Long id) throws Exception {
-        Guest guest = repository.findById(id).orElseThrow(() -> new Exception("não existe um hospede com esse Id"));
-        repository.delete(guest);
-        return "Hóspede deletado com sucesso!";
+    public String deletarGuestById(Long id){
+        if (id == null){
+            throw new BadRequestException("Id vazio, por favor envie um id válido");
+        }
+        try {
+            Guest guest = repository.findById(id)
+                    .orElseThrow(() -> new GuestNotFoundException("não existe um hospede com esse Id"));
+            repository.delete(guest);
+            return "Hóspede deletado com sucesso!";
+        } catch (BadRequestException e){
+            throw new BadRequestException("erro ao deletar hóspede, contate o suporte");
+        }
+
     }
 
     private void salvarGuest(Guest guest){
         repository.save(guest);
     }
 
-    public Guest findById(Long guestId) throws Exception {
-        return repository.findById(guestId).orElseThrow(() -> new Exception(""));
+    public Guest findById(Long guestId) {
+        if(guestId == null){
+            throw new BadRequestException("Id vazio, por favor envie um id válido");
+        }
+        try {
+            return repository.findById(guestId)
+                    .orElseThrow(() -> new GuestNotFoundException("Hospede não encontrado, Id inválido"));
+        }catch (BadRequestException e){
+            throw new BadRequestException("erro ao buscar o hóspede, contate o suporte");
+        }
     }
 
     private String excluirTracosePontos(String s){
@@ -120,7 +144,10 @@ public class GuestService {
     }
 
     public List<Guest> buscarHospedeDentroOuForaHotel(boolean dentroHotel){
-        return repository.findByDentroHotel(dentroHotel).get();
+        String mensagemErro = dentroHotel?"Não há pessoas dentro do hotel!":"Não há pessoas fora do hotel!";
+        return repository.findByDentroHotel(dentroHotel)
+                    .orElseThrow(() -> new BadRequestException(mensagemErro));
+
     }
 
 

@@ -4,6 +4,7 @@ import com.desafio.hotel.dto.response.ResponseDTO;
 import com.desafio.hotel.entity.checkin.Checkin;
 import com.desafio.hotel.entity.checkout.Checkout;
 import com.desafio.hotel.entity.guest.Guest;
+import com.desafio.hotel.exceptions.BadRequestException;
 import com.desafio.hotel.repositories.CheckoutRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,24 +32,36 @@ public class CheckoutService {
 
 
     public Checkout criarCheckout(Long id) throws Exception {
-        Checkin checkin = checkinService.findById(id);
-        Guest guest = checkin.getGuest();
-        Checkout checkout = new Checkout();
-        checkout.setGuest(checkin.getGuest());
-        checkout.setDataEntrada(checkin.getDataEntrada());
-        checkout.setDataSaida(LocalDateTime.now());
-        checkout.setAdicionalVeiculo(checkin.isAdicionalVeiculo());
-        BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(checkin.getDataEntrada(),
-                LocalDateTime.now(), checkin.isAdicionalVeiculo());
-        checkout.setValorTotal(valorTotal);
-        guest.setDentroHotel(false);
-        repository.save(checkout);
-        return checkout;
+        try {
+            Checkin checkin = checkinService.findById(id);
+            Guest guest = checkin.getGuest();
+            Checkout checkout = new Checkout();
+            checkout.setGuest(checkin.getGuest());
+            checkout.setDataEntrada(checkin.getDataEntrada());
+            checkout.setDataSaida(LocalDateTime.now());
+            checkout.setAdicionalVeiculo(checkin.isAdicionalVeiculo());
+            BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(checkin.getDataEntrada(),
+                    LocalDateTime.now(), checkin.isAdicionalVeiculo());
+            checkout.setValorTotal(valorTotal);
+            guest.setDentroHotel(false);
+            repository.save(checkout);
+            return checkout;
+        } catch (BadRequestException e){
+            throw new BadRequestException("erro ao criar o checkout, por favor contate o suporte");
+        }
     }
 
     public List<Checkout> findByGuestId(Long id) throws Exception {
-        return repository.findByGuestId(id)
-                .orElseThrow(()-> new Exception("não há nenhum checkout associado a esse cliente"));
+        if (id == null){
+            throw new BadRequestException("Id vazio, por favor informe um id válido");
+        }
+        try {
+            return repository.findByGuestId(id)
+                    .orElseThrow(()-> new Exception("não há nenhum checkout associado a esse cliente"));
+        }catch (BadRequestException e){
+            throw new BadRequestException("erro ao buscar o hóspede, por favor contate o suporte");
+        }
+
     }
 
     public List<ResponseDTO> buscarTodosHospedesNoHotel() throws Exception {
@@ -62,29 +75,34 @@ public class CheckoutService {
     private List<ResponseDTO> getResponseDTOS(boolean isDentroHotel) throws Exception {
         List<ResponseDTO> response = new ArrayList<>();
         List<Guest> guestList = guestService.buscarHospedeDentroOuForaHotel(isDentroHotel);
-        for(Guest guest: guestList){
-            BigDecimal valorGastoTotal;
-            BigDecimal valorGastoAtual;
-            List<Checkout> todosCheckouts = findByGuestId(guest.getId());
-            if(todosCheckouts.isEmpty()){
-                ResponseDTO responseDTO = ResponseDTO.builder()
-                        .guest(guest)
-                        .totalUltimaHospedagem(BigDecimal.ZERO)
-                        .totalHospedagens(BigDecimal.ZERO)
-                        .build();
-                response.add(responseDTO);
-            }else{
-                valorGastoTotal = todosCheckouts.stream()
-                        .map(Checkout::getValorTotal)
-                        .reduce(BigDecimal.ZERO, BigDecimal::add);
-                valorGastoAtual = todosCheckouts.get(todosCheckouts.size() - 1).getValorTotal();
-                ResponseDTO responseDTO = ResponseDTO.builder()
-                        .guest(guest)
-                        .totalHospedagens(valorGastoTotal)
-                        .totalUltimaHospedagem(valorGastoAtual)
-                        .build();
-                response.add(responseDTO);
+        try {
+            for(Guest guest: guestList){
+                BigDecimal valorGastoTotal;
+                BigDecimal valorGastoAtual;
+                List<Checkout> todosCheckouts = findByGuestId(guest.getId());
+                if(todosCheckouts.isEmpty()){
+                    ResponseDTO responseDTO = ResponseDTO.builder()
+                            .guest(guest)
+                            .totalUltimaHospedagem(BigDecimal.ZERO)
+                            .totalHospedagens(BigDecimal.ZERO)
+                            .build();
+                    response.add(responseDTO);
+                }else{
+                    valorGastoTotal = todosCheckouts.stream()
+                            .map(Checkout::getValorTotal)
+                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+                    valorGastoAtual = todosCheckouts.get(todosCheckouts.size() - 1).getValorTotal();
+                    ResponseDTO responseDTO = ResponseDTO.builder()
+                            .guest(guest)
+                            .totalHospedagens(valorGastoTotal)
+                            .totalUltimaHospedagem(valorGastoAtual)
+                            .build();
+                    response.add(responseDTO);
+                }
             }
+        } catch (BadRequestException e){
+            throw new BadRequestException
+                    ("Erro ao calcular os valores gastos pelo hóspede, por favor contate o suporte");
         }
         return response;
     }
