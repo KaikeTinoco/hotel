@@ -1,14 +1,15 @@
 package com.desafio.hotel.resource;
 
+import com.desafio.hotel.dto.response.ResponseDTO;
 import com.desafio.hotel.entity.checkin.Checkin;
 import com.desafio.hotel.entity.checkout.Checkout;
 import com.desafio.hotel.services.CheckoutService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/checkout")
@@ -17,8 +18,18 @@ public class CheckoutController {
     private CheckoutService checkoutService;
 
 
-    @PostMapping(path = "criarCheckout")
+    @PostMapping(path = "/criarCheckout")
     public ResponseEntity<Checkout> criarCheckout(@RequestParam Long checkinId) throws Exception {
         return ResponseEntity.ok(checkoutService.criarCheckout(checkinId));
+    }
+
+    @GetMapping(path = "/buscarHospedesDentroHotel")
+    public ResponseEntity<List<ResponseDTO>> buscarTodosHospedesDentroDoHotel() throws Exception {
+        return ResponseEntity.ok(checkoutService.buscarTodosHospedesNoHotel());
+    }
+
+    @GetMapping(path = "/buscarHospedesForaHotel")
+    public ResponseEntity<List<ResponseDTO>> buscarTodosHospedesForaDoHotel() throws Exception {
+        return ResponseEntity.ok(checkoutService.buscarTodosHospedesForaHotel());
     }
 }
