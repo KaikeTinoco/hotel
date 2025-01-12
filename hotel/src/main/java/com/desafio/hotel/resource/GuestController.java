@@ -36,7 +36,7 @@ public class GuestController {
     }
 
     @DeleteMapping(path = "/deletarHospedes")
-    public ResponseEntity<String> deletarHospede(@RequestParam Long id) throws Exception {
+    public ResponseEntity<String> deletarHospede(@RequestParam Long id)  {
         return ResponseEntity.ok(guestService.deletarGuestById(id));
     }
 
