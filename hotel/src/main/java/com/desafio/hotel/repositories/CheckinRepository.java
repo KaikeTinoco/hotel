@@ -11,6 +11,6 @@ import java.util.Optional;
 public interface CheckinRepository extends JpaRepository<Checkin, Long> {
     Optional<Checkin> findById(Long id);
     Optional<List<Checkin>> findByGuestId(Long guestId);
-    Optional<Checkin> findByAdicionalVeiculo(boolean adicionalVeiculo);
+    Optional<List<Checkin>> findByAdicionalVeiculo(boolean adicionalVeiculo);
 
 }
