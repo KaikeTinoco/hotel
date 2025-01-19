@@ -38,7 +38,7 @@ public class CheckoutService {
     }
 
 
-    public Checkout criarCheckout(Long id) throws Exception {
+    public Checkout criarCheckout(Long id){
         try {
             Checkin checkin = checkinService.findById(id);
             Guest guest = checkin.getGuest();
