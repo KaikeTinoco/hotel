@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface CheckoutRepository extends JpaRepository<Checkout, Long> {
     Optional<Checkout> findById(Long id);
     Optional<List<Checkout>> findByGuestId(Long guestId);
-    Optional<Checkout> findByAdicionalVeiculo(boolean adicionalVeiculo);
+
 }
