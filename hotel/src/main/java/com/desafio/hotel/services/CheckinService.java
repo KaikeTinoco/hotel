@@ -45,7 +45,9 @@ public class CheckinService {
             throw new BadRequestException("Por favor informe um id válido");
         }
         try {
-            Checkin checkin = repository.findById(id).orElseThrow(() -> new GuestNotFoundException("Hospede não encontrado, id inváldo"));
+            Checkin checkin = repository.findById(id).orElseThrow(() ->
+                    new BadRequestException("Checkin não encontrado, id inváldo"));
+            repository.delete(checkin);
             return "Checkin deletado com sucesso!";
         }catch (BadRequestException e){
             throw new BadRequestException("Erro ao deletar o checkin, por favor contate o suporte");

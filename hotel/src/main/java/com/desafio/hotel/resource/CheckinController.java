@@ -19,12 +19,12 @@ public class CheckinController {
 
 
     @PostMapping(path = "/cadastrarCheckin")
-    public ResponseEntity<Checkin> criarCheckin(@RequestBody CheckinCreateDto dto) throws Exception {
+    public ResponseEntity<Checkin> criarCheckin(@RequestBody CheckinCreateDto dto)  {
         return ResponseEntity.ok(checkinService.criarCheckin(dto));
     }
 
     @DeleteMapping(path = "/deletarCheckin")
-    public ResponseEntity<String> deletarCheckin(@RequestParam Long id) throws Exception {
+    public ResponseEntity<String> deletarCheckin(@RequestParam Long id)  {
         return ResponseEntity.ok(checkinService.deletarCheckin(id));
     }
 
