@@ -1,5 +1,6 @@
 package com.desafio.hotel.resource;
 
+import com.desafio.hotel.dto.response.ResponseDTO;
 import com.desafio.hotel.entity.checkin.Checkin;
 import com.desafio.hotel.entity.checkout.Checkout;
 import com.desafio.hotel.entity.guest.Guest;
@@ -33,12 +34,15 @@ class CheckoutControllerTest {
 
     private Checkin checkin;
 
+    private ResponseDTO dto;
+
     @BeforeEach
     void init(){
         MockitoAnnotations.openMocks(this);
         guest = criarHospede();
         checkout = criarCheckout(guest);
         checkin = criarCheckin(guest);
+        dto = criarResponseDto(guest);
     }
 
     @Test
@@ -53,14 +57,23 @@ class CheckoutControllerTest {
 
     @Test
     void buscarTodosHospedesDentroDoHotel() {
-        Checkout checkoutCreated = checkout;
-        List<Checkout> checkouts = Arrays.asList(checkoutCreated);
-
-
+        ResponseDTO responseDTO = dto;
+        List<ResponseDTO> dtos = Arrays.asList(responseDTO);
+        Mockito.when(checkoutService.buscarTodosHospedesNoHotel()).thenReturn(dtos);
+        ResponseEntity response = checkoutController.buscarTodosHospedesDentroDoHotel();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
     }
 
     @Test
     void buscarTodosHospedesForaDoHotel() {
+        //a lógica é a mesma, não muda o que tem que fazer
+        ResponseDTO responseDTO = dto;
+        List<ResponseDTO> dtos = Arrays.asList(responseDTO);
+        Mockito.when(checkoutService.buscarTodosHospedesForaHotel()).thenReturn(dtos);
+        ResponseEntity response = checkoutController.buscarTodosHospedesDentroDoHotel();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
     }
 
     private Checkout criarCheckout(Guest guest){
@@ -91,5 +104,14 @@ class CheckoutControllerTest {
         checkin.setDataEntrada(LocalDateTime.now());
         checkin.setAdicionalVeiculo(true);
         return checkin;
+    }
+
+    private ResponseDTO criarResponseDto(Guest guest){
+        ResponseDTO dto = ResponseDTO.builder()
+                .guest(guest)
+                .totalHospedagens(BigDecimal.valueOf(100))
+                .totalHospedagens(BigDecimal.valueOf(200))
+                .build();
+        return dto;
     }
 }
