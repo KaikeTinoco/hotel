@@ -23,17 +23,17 @@ public class CheckoutController {
 
 
     @PostMapping(path = "/criarCheckout")
-    public ResponseEntity<Checkout> criarCheckout(@RequestParam Long checkinId) throws Exception {
+    public ResponseEntity<Checkout> criarCheckout(@RequestParam Long checkinId) {
         return ResponseEntity.ok(checkoutService.criarCheckout(checkinId));
     }
 
     @GetMapping(path = "/buscarHospedesDentroHotel")
-    public ResponseEntity<List<ResponseDTO>> buscarTodosHospedesDentroDoHotel() throws Exception {
+    public ResponseEntity<List<ResponseDTO>> buscarTodosHospedesDentroDoHotel()  {
         return ResponseEntity.ok(checkoutService.buscarTodosHospedesNoHotel());
     }
 
     @GetMapping(path = "/buscarHospedesForaHotel")
-    public ResponseEntity<List<ResponseDTO>> buscarTodosHospedesForaDoHotel() throws Exception {
+    public ResponseEntity<List<ResponseDTO>> buscarTodosHospedesForaDoHotel() {
         return ResponseEntity.ok(checkoutService.buscarTodosHospedesForaHotel());
     }
 }

@@ -58,28 +58,28 @@ public class CheckoutService {
         }
     }
 
-    public List<Checkout> findByGuestId(Long id) throws Exception {
+    public List<Checkout> findByGuestId(Long id) {
         if (id == null){
             throw new BadRequestException("Id vazio, por favor informe um id válido");
         }
         try {
             return repository.findByGuestId(id)
-                    .orElseThrow(()-> new Exception("não há nenhum checkout associado a esse cliente"));
+                    .orElseThrow(()-> new BadRequestException("não há nenhum checkout associado a esse cliente"));
         }catch (BadRequestException e){
             throw new BadRequestException("erro ao buscar o hóspede, por favor contate o suporte");
         }
 
     }
 
-    public List<ResponseDTO> buscarTodosHospedesNoHotel() throws Exception {
+    public List<ResponseDTO> buscarTodosHospedesNoHotel() {
         return getResponseDTOS(true);
     }
 
-    public List<ResponseDTO> buscarTodosHospedesForaHotel() throws Exception {
+    public List<ResponseDTO> buscarTodosHospedesForaHotel() {
         return getResponseDTOS(false);
     }
 
-    private List<ResponseDTO> getResponseDTOS(boolean isDentroHotel) throws Exception {
+    private List<ResponseDTO> getResponseDTOS(boolean isDentroHotel) {
         List<ResponseDTO> response = new ArrayList<>();
         List<Guest> guestList = guestService.buscarHospedeDentroOuForaHotel(isDentroHotel);
         try {
