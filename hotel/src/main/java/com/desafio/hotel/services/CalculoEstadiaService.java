@@ -1,6 +1,7 @@
 package com.desafio.hotel.services;
 
 import com.desafio.hotel.entity.checkout.Checkout;
+import com.desafio.hotel.exceptions.BadRequestException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -20,6 +21,10 @@ public class CalculoEstadiaService {
     public BigDecimal calcularValorEstadia(LocalDateTime dataEntrada,
                                            LocalDateTime dataSaida,
                                            boolean adicionalVeiculo) {
+        if (dataSaida.isBefore(dataEntrada)){
+            throw new BadRequestException("A data de entrada não pode ser depois da data de saída!");
+        }
+
         long totalDias = ChronoUnit.DAYS.between(dataEntrada.toLocalDate(), dataSaida.toLocalDate());
         long finaisDeSemana = contarFinaisDeSemana(dataEntrada, dataSaida);
         long diasUteis = totalDias - finaisDeSemana;
@@ -29,6 +34,7 @@ public class CalculoEstadiaService {
 
         BigDecimal valorTotal = valorDiaUtil.multiply(BigDecimal.valueOf(diasUteis))
                 .add(valorFinalDeSemana.multiply(BigDecimal.valueOf(finaisDeSemana)));
+
 
         if (checarHoraSaida(dataSaida)) {
             if (dataSaida.getDayOfWeek() == DayOfWeek.SATURDAY || dataSaida.getDayOfWeek() == DayOfWeek.SUNDAY) {
@@ -53,8 +59,6 @@ public class CalculoEstadiaService {
     }
 
     private boolean checarHoraSaida(LocalDateTime dataSaida) {
-        int hora = dataSaida.getHour();
-        int minutos = dataSaida.getMinute();
         if(dataSaida.getHour() > 16){
             return true;
         } else return dataSaida.getHour() == 16 && dataSaida.getMinute() == 30;
