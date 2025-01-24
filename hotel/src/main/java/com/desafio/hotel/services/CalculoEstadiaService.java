@@ -55,7 +55,9 @@ public class CalculoEstadiaService {
     private boolean checarHoraSaida(LocalDateTime dataSaida) {
         int hora = dataSaida.getHour();
         int minutos = dataSaida.getMinute();
-        return hora >= 16 && minutos >= 30;
+        if(dataSaida.getHour() > 16){
+            return true;
+        } else return dataSaida.getHour() == 16 && dataSaida.getMinute() == 30;
     }
 
     private final Map<Long, BigDecimal> totalPorCliente = new HashMap<>();
