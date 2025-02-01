@@ -1,111 +1,92 @@
 package com.desafio.hotel.services;
-
 import com.desafio.hotel.dto.checkin.CheckinCreateDto;
 import com.desafio.hotel.dto.guest.GuestDto;
 import com.desafio.hotel.entity.checkin.Checkin;
 import com.desafio.hotel.entity.guest.Guest;
+import com.desafio.hotel.exceptions.BadRequestException;
 import com.desafio.hotel.repositories.CheckinRepository;
 import com.desafio.hotel.repositories.GuestRepository;
-import org.hibernate.annotations.Check;
+import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-
+import java.lang.reflect.Array;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-
 class CheckinServiceTest {
     @InjectMocks
     private CheckinService checkinService;
-
     @Mock
     private CheckinRepository checkinRepository;
-
     @Mock
     private GuestService guestService;
-
     @Mock
     private GuestRepository guestRepository;
-
     private Guest guest;
-
     private Checkin checkin;
-
+    private CheckinCreateDto checkinDto;
     private GuestDto dto;
-
     @BeforeEach
     void init(){
         MockitoAnnotations.openMocks(this);
         guest = criarHospede();
-        checkin = criarCheckin(guest);
+        checkin = criarCheckin();
         dto = criarDto();
+        checkinDto = criarCheckinDto(guest);
     }
 
     @Test
     void criarCheckinTest() {
-        GuestDto guestDto = criarDto();
-        Mockito.when(guestService.cadastrarHospede(guestDto)).thenReturn(guest);
         Mockito.when(guestRepository.save(guest)).thenReturn(guest);
-
-        Guest guestFound = guestService.cadastrarHospede(guestDto);
-        CheckinCreateDto createDto = criarCheckinDto(guestFound);
-        Checkin checkinCreate = criarCheckin(guestFound);
-        Mockito.when(checkinService.criarCheckin(createDto)).thenReturn(checkinCreate);
-        Mockito.when(checkinRepository.save(checkinCreate)).thenReturn(checkinCreate);
-        Mockito.when(guestService.findById(createDto.getGuestId())).thenReturn(guestFound);
-        Mockito.when(guestRepository.findById(createDto.getGuestId())).thenReturn(Optional.of(guestFound));
-        Checkin checkinFound = checkinService.criarCheckin(createDto);
-
-        assertNotNull(checkinFound);
-        assertEquals("Gustavo", checkinFound.getGuest().getNome());
-        assertTrue(checkinFound.getGuest().isDentroHotel());
+        Mockito.when(guestService.cadastrarHospede(dto)).thenReturn(guest);
+        Mockito.when(checkinService.criarCheckin(checkinDto)).thenReturn(checkin);
+        Mockito.when(checkinRepository.save(checkin)).thenReturn(checkin);
+        Checkin checkinCreated = checkinService.criarCheckin(checkinDto);
+        assertEquals(checkin, checkinCreated);
     }
-
 
     @Test
     void deletarCheckin() {
-        Mockito.when(checkinRepository.save(criarCheckin(guest))).thenReturn(checkin);
         Mockito.when(checkinRepository.findById(checkin.getId())).thenReturn(Optional.of(checkin));
-
-
+        Mockito.when(checkinService.deletarCheckin(checkin.getId())).thenReturn("Checkin deletado com sucesso!");
         String message = checkinService.deletarCheckin(checkin.getId());
         assertEquals("Checkin deletado com sucesso!", message);
     }
 
     @Test
+    void deletarCheckinNullId() {
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> checkinService.deletarCheckin(null));
+        assertEquals("Por favor informe um id válido", exception.getMessage());
+    }
+
+    @Test
     void findByGuestId() {
-        Guest guestCreated = criarHospede();
-
-        Mockito.when(guestService.cadastrarHospede((dto))).thenReturn(guest);
-        Mockito.when(checkinService.criarCheckin(criarCheckinDto(guestCreated))).thenReturn(checkin);
-        Checkin checkinCreated = checkinService.criarCheckin(criarCheckinDto(guestCreated));
-        List<Checkin> checkins = Arrays.asList(checkinCreated);
-
-        Mockito.when(checkinService.findByGuestId(checkinCreated.getGuest().getId())).thenReturn(checkins);
-        List<Checkin> checkinsFound = checkinService.findByGuestId(checkinCreated.getGuest().getId());
-        assertEquals(checkinsFound.size(), checkins.size());
-        assertEquals(checkinsFound.get(0), checkins.get(0));
+        Mockito.when(guestRepository.save(guest)).thenReturn(guest);
+        Mockito.when(guestService.findById(guest.getId())).thenReturn(guest);
+        Mockito.when(checkinRepository.findByGuestId(guest.getId())).thenReturn(Optional.of(Arrays.asList(checkin)));
+        List<Checkin> checkins = checkinService.findByGuestId(guest.getId());
+        assertEquals(checkin, checkins.get(0));
     }
 
     @Test
     void findById() {
-        Guest guestB = criarHospede();
-        Mockito.when(guestService.cadastrarHospede((dto))).thenReturn(guest);
-        Mockito.when(checkinService.criarCheckin(criarCheckinDto(guestB))).thenReturn(checkin);
-        Checkin checkinB = checkinService.criarCheckin(criarCheckinDto(guestB));
-        Mockito.when(checkinService.findById(checkinB.getId())).thenReturn(checkin);
-        Checkin checkinA = checkinService.findById(checkinB.getId());
-        assertEquals(checkinA, checkinB);
+        Mockito.when(checkinRepository.findById(checkin.getId())).thenReturn(Optional.of(checkin));
+        Checkin checkinFound = checkinService.findById(checkin.getId());
+        assertEquals(checkin, checkinFound);
     }
 
+    @Test
+    void findByIdErrorIdNUll(){
+        BadRequestException e = assertThrows(BadRequestException.class, () -> checkinService.findById(null));
+        assertEquals("Por favor informe um id válido", e.getMessage());
+    }
 
     private Guest criarHospede(){
         Guest guest = new Guest();
@@ -116,16 +97,14 @@ class CheckinServiceTest {
         guest.setDentroHotel(true);
         return guest;
     }
-
-    private Checkin criarCheckin(Guest guest){
+    private Checkin criarCheckin(){
         Checkin checkin = new Checkin();
         checkin.setId(1L);
-        checkin.setGuest(guest);
+        checkin.setGuest(criarHospede());
         checkin.setDataEntrada(LocalDateTime.now());
         checkin.setAdicionalVeiculo(true);
         return checkin;
     }
-
     private GuestDto criarDto(){
         GuestDto dto = new GuestDto();
         dto.setNome("Gustavo");
@@ -133,7 +112,6 @@ class CheckinServiceTest {
         dto.setTelefone("111222333444");
         return dto;
     }
-
     private CheckinCreateDto criarCheckinDto(Guest guest){
         CheckinCreateDto dto = new CheckinCreateDto();
         dto.setGuestId(guest.getId());
