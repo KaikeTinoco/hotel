@@ -86,7 +86,7 @@ public class CheckoutService {
     private List<ResponseDTO> getResponseDTOS(boolean isDentroHotel) {
         List<ResponseDTO> response = new ArrayList<>();
         List<Guest> guestList = guestService.buscarHospedeDentroOuForaHotel(isDentroHotel);
-        if (guestList.isEmpty()){
+        if (guestList == null || guestList.isEmpty()){
             throw new BadRequestException("Hóspedes não econtrados");
         }
         try {
