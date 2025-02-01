@@ -1,13 +1,14 @@
 package com.desafio.hotel.services;
 
 import com.desafio.hotel.dto.guest.GuestDto;
+import com.desafio.hotel.dto.response.ResponseDTO;
 import com.desafio.hotel.entity.checkin.Checkin;
 import com.desafio.hotel.entity.checkout.Checkout;
 import com.desafio.hotel.entity.guest.Guest;
+import com.desafio.hotel.exceptions.BadRequestException;
 import com.desafio.hotel.repositories.CheckinRepository;
 import com.desafio.hotel.repositories.CheckoutRepository;
 import com.desafio.hotel.repositories.GuestRepository;
-import org.hibernate.annotations.Check;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -15,15 +16,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-import javax.swing.*;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CheckoutServiceTest {
     @InjectMocks
@@ -56,13 +56,15 @@ class CheckoutServiceTest {
 
     private Checkin checkin;
 
+    private ResponseDTO responseDTO;
+
     @BeforeEach
     void init(){
         MockitoAnnotations.openMocks(this);
         guest = criarHospede();
         checkout  = criarCheckout(guest);
-        guestDto = criarDto();
         checkin = criarCheckin(guest);
+        responseDTO = criarResponseDTO(guest);
     }
 
     @Test
@@ -84,23 +86,44 @@ class CheckoutServiceTest {
 
     @Test
     void findByGuestId() {
-        Guest guestBase = guest;
-        guestRepository.save(guestBase);
-        Checkout checkoutBase = checkout;
-        List<Checkout> checkouts = Arrays.asList(checkoutBase);
-        checkoutRepository.saveAll(checkouts);
-        Mockito.when(checkoutService.findByGuestId(guest.getId())).thenReturn(checkouts);
-        List<Checkout> checkoutsFound = checkoutService.findByGuestId(guest.getId());
-        assertEquals(checkoutBase, checkoutsFound);
+        Mockito.when(guestRepository.save(guest)).thenReturn(guest);
+        Mockito.when(guestService.findById(guest.getId())).thenReturn(guest);
+        Mockito.when(checkoutRepository.findByGuestId(guest.getId())).thenReturn(Optional.of(Arrays.asList(checkout)));
+        List<Checkout> checkins = checkoutService.findByGuestId(guest.getId());
+        assertEquals(checkout, checkins.get(0));
+    }
 
+    @Test
+    void findByGuestIdWhenIdNull() {
+        assertThrows(BadRequestException.class, () -> checkoutService.findByGuestId(null));
     }
 
     @Test
     void buscarTodosHospedesNoHotel() {
+        Mockito.when(guestRepository.saveAll(Arrays.asList(guest))).thenReturn(Arrays.asList(guest));
+        Mockito.when(guestService.buscarHospedeDentroOuForaHotel(true)).thenReturn(Arrays.asList(guest));
+        Mockito.when(checkoutRepository.findByGuestId(guest.getId())).thenReturn(Optional.of(Arrays.asList(checkout)));
+        Mockito.when(calculoEstadiaService.calcularTotalEstadias(guest.getId(),Arrays.asList(checkout)))
+                .thenReturn(BigDecimal.valueOf(100));
+        List<ResponseDTO> dtos = checkoutService.buscarTodosHospedesNoHotel();
+        assertEquals(responseDTO, dtos.get(0));
     }
 
     @Test
     void buscarTodosHospedesForaHotel() {
+        Mockito.when(guestRepository.saveAll(Arrays.asList(guest))).thenReturn(Arrays.asList(guest));
+        Mockito.when(guestService.buscarHospedeDentroOuForaHotel(false)).thenReturn(Arrays.asList(guest));
+        Mockito.when(checkoutRepository.findByGuestId(guest.getId())).thenReturn(Optional.of(Arrays.asList(checkout)));
+        Mockito.when(calculoEstadiaService.calcularTotalEstadias(guest.getId(),Arrays.asList(checkout)))
+                .thenReturn(BigDecimal.valueOf(100));
+        List<ResponseDTO> dtos = checkoutService.buscarTodosHospedesForaHotel();
+        assertEquals(responseDTO, dtos.get(0));
+    }
+
+    @Test
+    void buscarTodosHospedesForaDentroHotelIdNull() {
+        Mockito.when(guestService.buscarHospedeDentroOuForaHotel(true)).thenReturn(null);
+        assertThrows(BadRequestException.class, () -> checkoutService.buscarTodosHospedesNoHotel());
     }
 
     private Checkout criarCheckout(Guest guest){
@@ -124,14 +147,6 @@ class CheckoutServiceTest {
         return guest;
     }
 
-    private GuestDto criarDto(){
-        GuestDto dto = new GuestDto();
-        dto.setNome("Gustavo");
-        dto.setDocumento("23583290");
-        dto.setTelefone("111222333444");
-        return dto;
-    }
-
     private Checkin criarCheckin(Guest guest){
         Checkin checkin = new Checkin();
         checkin.setId(1L);
@@ -141,4 +156,11 @@ class CheckoutServiceTest {
         return checkin;
     }
 
+    private ResponseDTO criarResponseDTO(Guest guest){
+        return ResponseDTO.builder()
+                .guest(guest)
+                .totalUltimaHospedagem(BigDecimal.valueOf(100))
+                .totalHospedagens(BigDecimal.valueOf(100))
+                .build();
+    }
 }
