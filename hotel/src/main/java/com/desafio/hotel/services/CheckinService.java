@@ -36,7 +36,7 @@ public class CheckinService {
             repository.save(checkin);
             return checkin;
         } catch (BadRequestException e){
-            throw new BadRequestException("erro ao criar o checkin, por favor contate o suporte");
+            throw new BadRequestException(e.getMessage());
         }
     }
 
@@ -50,7 +50,7 @@ public class CheckinService {
             repository.delete(checkin);
             return "Checkin deletado com sucesso!";
         }catch (BadRequestException e){
-            throw new BadRequestException("Erro ao deletar o checkin, por favor contate o suporte");
+            throw new BadRequestException(e.getMessage());
         }
     }
 

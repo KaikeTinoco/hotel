@@ -39,6 +39,9 @@ public class CheckoutService {
 
 
     public Checkout criarCheckout(Long id){
+        if(id == null){
+            throw new BadRequestException("id vazio, por favor envie um id válido");
+        }
         try {
             Checkin checkin = checkinService.findById(id);
             Guest guest = checkin.getGuest();
@@ -54,7 +57,7 @@ public class CheckoutService {
             repository.save(checkout);
             return checkout;
         } catch (BadRequestException e){
-            throw new BadRequestException("erro ao criar o checkout, por favor contate o suporte");
+            throw new BadRequestException(e.getMessage());
         }
     }
 
@@ -66,7 +69,8 @@ public class CheckoutService {
             return repository.findByGuestId(id)
                     .orElseThrow(()-> new BadRequestException("não há nenhum checkout associado a esse cliente"));
         }catch (BadRequestException e){
-            throw new BadRequestException("erro ao buscar o hóspede, por favor contate o suporte");
+            throw new BadRequestException(e.getMessage());
+
         }
 
     }
@@ -82,6 +86,9 @@ public class CheckoutService {
     private List<ResponseDTO> getResponseDTOS(boolean isDentroHotel) {
         List<ResponseDTO> response = new ArrayList<>();
         List<Guest> guestList = guestService.buscarHospedeDentroOuForaHotel(isDentroHotel);
+        if (guestList.isEmpty()){
+            throw new BadRequestException("Hóspedes não econtrados");
+        }
         try {
             for(Guest guest: guestList){
                 BigDecimal valorGastoTotal;
@@ -106,8 +113,7 @@ public class CheckoutService {
                 }
             }
         } catch (BadRequestException e){
-            throw new BadRequestException
-                    ("Erro ao calcular os valores gastos pelo hóspede, por favor contate o suporte");
+            throw new BadRequestException(e.getMessage());
         }
         return response;
     }
