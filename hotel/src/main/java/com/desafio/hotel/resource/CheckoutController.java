@@ -3,6 +3,7 @@ package com.desafio.hotel.resource;
 import com.desafio.hotel.dto.response.ResponseDTO;
 import com.desafio.hotel.entity.checkin.Checkin;
 import com.desafio.hotel.entity.checkout.Checkout;
+import com.desafio.hotel.openapi.CheckoutControllerOpenApi;
 import com.desafio.hotel.services.CheckoutService;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/checkout")
-public class CheckoutController {
+public class CheckoutController implements CheckoutControllerOpenApi {
 
     private final CheckoutService checkoutService;
 

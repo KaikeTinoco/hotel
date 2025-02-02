@@ -2,6 +2,7 @@ package com.desafio.hotel.resource;
 
 import com.desafio.hotel.dto.guest.GuestDto;
 import com.desafio.hotel.entity.guest.Guest;
+import com.desafio.hotel.openapi.GuestControllerOpenApi;
 import com.desafio.hotel.services.GuestService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +11,7 @@ import java.util.List;
 
 @RestController()
 @RequestMapping(path = "/guests")
-public class GuestController {
+public class GuestController implements GuestControllerOpenApi {
     private final GuestService guestService;
 
     public GuestController(GuestService guestService) {
