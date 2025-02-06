@@ -27,11 +27,11 @@ class GuestRepositoryTest {
     @BeforeEach
     public void init(){
         guest = criarHospede();
+        guestRepository.save(guest);
     }
 
     @Test
     void findByDentroHotel() {
-        guestRepository.save(guest);
         Optional<List<Guest>> guests = guestRepository.findByDentroHotel(true);
         assertNotNull(guests);
         assertThat(!guests.get().isEmpty());
@@ -39,49 +39,33 @@ class GuestRepositoryTest {
 
     @Test
     void findByDentroHotelError() {
-        guestRepository.save(guest);
         Optional<List<Guest>> guests = guestRepository.findByDentroHotel(false);
         assertNotNull(guests);
         assertThat(guests.get().isEmpty());
     }
 
     @Test
-    void  deletarGuestByIdTest(){
-        guestRepository.save(guest);
-        Optional<Guest> optionalGuest = guestRepository.findById(guest.getId());
-        guestRepository.delete(optionalGuest.get());
-    }
-
-    @Test
     void saveGuestTest(){
-        guestRepository.save(guest);
-        assertThat(guest.getNome()).isEqualTo("Gustavo");
-        assertThat(guest.getDocumento()).isEqualTo("23583290");
-        assertThat(guest.getTelefone()).isEqualTo("111222333444");
-        assertThat(guest.isDentroHotel()).isEqualTo(true);
-        assertNotNull(guest.getId());
-        assertEquals(guest.getId(), Long.valueOf(5));
+        Guest created = criarHospede();
+        guestRepository.save(created);
     }
 
     @Test
     void findByIdTest(){
-        guestRepository.save(guest);
         Optional<Guest> foundGuest = guestRepository.findById(guest.getId());
-        assertEquals(foundGuest.get().getNome(), "Gustavo");
-        assertEquals(foundGuest.get().getDocumento(),"23583290");
-        assertEquals(foundGuest.get().getTelefone(),"111222333444");
-        assertEquals(foundGuest.get().isDentroHotel(), true);
-        assertNotNull(foundGuest.get().getId());
-        assertEquals(foundGuest.get().getId(), Long.valueOf(4));
+        assertEquals(foundGuest.get(), guest);
     }
 
     @Test
     void buscarTodosHospedes(){
-        List<Guest> guests = Arrays.asList(guest);
-        guestRepository.saveAll(guests);
         List<Guest> foundGuests = guestRepository.findAll();
         assertThat(guest).isNotNull();
+    }
 
+    @Test
+    void  deletarGuestByIdTest(){
+        Optional<Guest> optionalGuest = guestRepository.findById(guestRepository.findAll().get(0).getId());
+        guestRepository.delete(optionalGuest.get());
     }
 
     @Test

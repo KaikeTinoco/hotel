@@ -7,6 +7,7 @@ import com.desafio.hotel.exceptions.BadRequestException;
 import com.desafio.hotel.repositories.CheckinRepository;
 import com.desafio.hotel.repositories.GuestRepository;
 import org.checkerframework.checker.units.qual.C;
+import org.hibernate.mapping.Any;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -20,6 +21,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.postgresql.hostchooser.HostRequirement.any;
+
 class CheckinServiceTest {
     @InjectMocks
     private CheckinService checkinService;
@@ -44,10 +47,8 @@ class CheckinServiceTest {
 
     @Test
     void criarCheckinTest() {
-        Mockito.when(guestRepository.save(guest)).thenReturn(guest);
-        Mockito.when(guestService.cadastrarHospede(dto)).thenReturn(guest);
-        Mockito.when(checkinService.criarCheckin(checkinDto)).thenReturn(checkin);
-        Mockito.when(checkinRepository.save(checkin)).thenReturn(checkin);
+        Mockito.when(guestService.findById(checkinDto.getGuestId())).thenReturn(guest);
+        Mockito.when(checkinRepository.save(Mockito.any(Checkin.class))).thenReturn(checkin);
         Checkin checkinCreated = checkinService.criarCheckin(checkinDto);
         assertEquals(checkin, checkinCreated);
     }
@@ -55,7 +56,6 @@ class CheckinServiceTest {
     @Test
     void deletarCheckin() {
         Mockito.when(checkinRepository.findById(checkin.getId())).thenReturn(Optional.of(checkin));
-        Mockito.when(checkinService.deletarCheckin(checkin.getId())).thenReturn("Checkin deletado com sucesso!");
         String message = checkinService.deletarCheckin(checkin.getId());
         assertEquals("Checkin deletado com sucesso!", message);
     }
