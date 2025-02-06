@@ -33,6 +33,7 @@ public class CheckinService {
             Guest novoHospede = guestService.findById(dto.getGuestId());
             checkin.setGuest(novoHospede);
             checkin.setDataEntrada(dto.getDataEntrada());
+            checkin.setAdicionalVeiculo(dto.isAdicionalVeiculo());
             repository.save(checkin);
             return checkin;
         } catch (BadRequestException e){

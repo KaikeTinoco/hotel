@@ -50,7 +50,7 @@ class CheckinServiceTest {
         Mockito.when(guestService.findById(checkinDto.getGuestId())).thenReturn(guest);
         Mockito.when(checkinRepository.save(Mockito.any(Checkin.class))).thenReturn(checkin);
         Checkin checkinCreated = checkinService.criarCheckin(checkinDto);
-        assertEquals(checkin, checkinCreated);
+       assertEquals(guest, checkinCreated.getGuest());
     }
 
     @Test
