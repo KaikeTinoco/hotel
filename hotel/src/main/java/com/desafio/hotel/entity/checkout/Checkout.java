@@ -1,5 +1,6 @@
 package com.desafio.hotel.entity.checkout;
 
+import com.desafio.hotel.entity.checkin.Checkin;
 import com.desafio.hotel.entity.guest.Guest;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -23,20 +24,16 @@ public class Checkout {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
 
-    @ManyToOne
-    private Guest guest;
-
-    @NotNull(message = "dataEntrada não pode estar vazio!")
-    private LocalDateTime dataEntrada;
-
-    @NotNull(message = "dataSaida não pode estar vazio!")
-    private LocalDateTime dataSaida;
-
-    @NotNull(message = "adicionalVeiculo não pode estar vazio!")
-    private boolean adicionalVeiculo;
+    @OneToOne
+    @NotNull(message = "Um checkout precisa estar associado à um checkin!")
+    @JoinColumn(name = "checkin_id", unique = true)
+    private Checkin checkin;
 
     @NotNull(message = "valorTotal não pode estar vazio!")
     private BigDecimal valorTotal;
+
+    @NotNull(message = "por favor, informe a data de saída")
+    private LocalDateTime dataSaida;
 
 
 }

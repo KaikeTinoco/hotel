@@ -1,6 +1,5 @@
 package com.desafio.hotel.entity.guest;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.br.CPF;
 
 @Entity(name = "Guest")
 @Table(name = "Guests")
@@ -26,6 +26,7 @@ public class Guest {
 
     @NotBlank(message = "documento não pode estar em branco!")
     @NotNull(message = "documento não pode estar vazio!")
+    @CPF
     private String documento;
 
     @NotBlank(message = "telefone não pode estar em branco!")

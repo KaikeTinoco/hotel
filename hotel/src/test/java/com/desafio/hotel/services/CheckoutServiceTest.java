@@ -62,8 +62,8 @@ class CheckoutServiceTest {
     void init(){
         MockitoAnnotations.openMocks(this);
         guest = criarHospede();
-        checkout  = criarCheckout(guest);
         checkin = criarCheckin(guest);
+        checkout  = criarCheckout(checkin);
         responseDTO = criarResponseDTO(guest);
     }
 
@@ -77,32 +77,32 @@ class CheckoutServiceTest {
 
 
 
-        assertEquals(checkoutBase.getGuest().getNome(), checkoutCreated.getGuest().getNome());
-        assertEquals(checkoutBase.getGuest().getDocumento(), checkoutCreated.getGuest().getDocumento());
-        assertEquals(checkoutBase.getGuest().getTelefone(), checkoutCreated.getGuest().getTelefone());
-        assertEquals(checkoutBase.getDataEntrada(), checkoutCreated.getDataEntrada());
-        assertEquals(checkoutBase.isAdicionalVeiculo(), checkoutCreated.isAdicionalVeiculo());
+        assertEquals(checkoutBase.getCheckin().getGuest().getNome(), checkoutCreated.getCheckin().getGuest().getNome());
+        assertEquals(checkoutBase.getCheckin().getGuest().getDocumento(), checkoutCreated.getCheckin().getGuest().getDocumento());
+        assertEquals(checkoutBase.getCheckin().getGuest().getTelefone(), checkoutCreated.getCheckin().getGuest().getTelefone());
+        assertEquals(checkoutBase.getCheckin().getDataEntrada(), checkoutCreated.getCheckin().getDataEntrada());
+        assertEquals(checkoutBase.getCheckin().isAdicionalVeiculo(), checkoutCreated.getCheckin().isAdicionalVeiculo());
     }
 
     @Test
     void findByGuestId() {
         Mockito.when(guestRepository.save(guest)).thenReturn(guest);
         Mockito.when(guestService.findById(guest.getId())).thenReturn(guest);
-        Mockito.when(checkoutRepository.findByGuestId(guest.getId())).thenReturn(Optional.of(Arrays.asList(checkout)));
-        List<Checkout> checkins = checkoutService.findByGuestId(guest.getId());
+        Mockito.when(checkoutRepository.findByCheckinId(guest.getId())).thenReturn(Optional.of(Arrays.asList(checkout)));
+        List<Checkout> checkins = checkoutService.findByCheckinId(guest.getId());
         assertEquals(checkout, checkins.get(0));
     }
 
     @Test
-    void findByGuestIdWhenIdNull() {
-        assertThrows(BadRequestException.class, () -> checkoutService.findByGuestId(null));
+    void findByCheckinIdWhenIdNull() {
+        assertThrows(BadRequestException.class, () -> checkoutService.findByCheckinId(null));
     }
 
     @Test
     void buscarTodosHospedesNoHotel() {
         Mockito.when(guestRepository.saveAll(Arrays.asList(guest))).thenReturn(Arrays.asList(guest));
         Mockito.when(guestService.buscarHospedeDentroOuForaHotel(true)).thenReturn(Arrays.asList(guest));
-        Mockito.when(checkoutRepository.findByGuestId(guest.getId())).thenReturn(Optional.of(Arrays.asList(checkout)));
+        Mockito.when(checkoutRepository.findByCheckinId(guest.getId())).thenReturn(Optional.of(Arrays.asList(checkout)));
         Mockito.when(calculoEstadiaService.calcularTotalEstadias(guest.getId(),Arrays.asList(checkout)))
                 .thenReturn(BigDecimal.valueOf(100));
         List<ResponseDTO> dtos = checkoutService.buscarTodosHospedesNoHotel();
@@ -113,7 +113,7 @@ class CheckoutServiceTest {
     void buscarTodosHospedesForaHotel() {
         Mockito.when(guestRepository.saveAll(Arrays.asList(guest))).thenReturn(Arrays.asList(guest));
         Mockito.when(guestService.buscarHospedeDentroOuForaHotel(false)).thenReturn(Arrays.asList(guest));
-        Mockito.when(checkoutRepository.findByGuestId(guest.getId())).thenReturn(Optional.of(Arrays.asList(checkout)));
+        Mockito.when(checkoutRepository.findByCheckinId(guest.getId())).thenReturn(Optional.of(Arrays.asList(checkout)));
         Mockito.when(calculoEstadiaService.calcularTotalEstadias(guest.getId(),Arrays.asList(checkout)))
                 .thenReturn(BigDecimal.valueOf(100));
         List<ResponseDTO> dtos = checkoutService.buscarTodosHospedesForaHotel();
@@ -126,13 +126,11 @@ class CheckoutServiceTest {
         assertThrows(BadRequestException.class, () -> checkoutService.buscarTodosHospedesNoHotel());
     }
 
-    private Checkout criarCheckout(Guest guest){
+    private Checkout criarCheckout(Checkin checkin){
         Checkout checkout = new Checkout();
         checkout.setId(1L);
-        checkout.setGuest(guest);
-        checkout.setDataEntrada(LocalDateTime.of(2025,1,2,14,0));
+        checkout.setCheckin(checkin);
         checkout.setDataSaida(LocalDateTime.now());
-        checkout.setAdicionalVeiculo(true);
         checkout.setValorTotal(BigDecimal.valueOf(100));
         return checkout;
     }

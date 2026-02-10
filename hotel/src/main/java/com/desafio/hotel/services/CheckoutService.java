@@ -46,10 +46,8 @@ public class CheckoutService {
             Checkin checkin = checkinService.findById(id);
             Guest guest = checkin.getGuest();
             Checkout checkout = new Checkout();
-            checkout.setGuest(checkin.getGuest());
-            checkout.setDataEntrada(checkin.getDataEntrada());
+            checkout.setCheckin(checkin);
             checkout.setDataSaida(LocalDateTime.now());
-            checkout.setAdicionalVeiculo(checkin.isAdicionalVeiculo());
             BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(checkin.getDataEntrada(),
                     LocalDateTime.now(), checkin.isAdicionalVeiculo());
             checkout.setValorTotal(valorTotal);
@@ -61,12 +59,12 @@ public class CheckoutService {
         }
     }
 
-    public List<Checkout> findByGuestId(Long id) {
+    public List<Checkout> findByCheckinId(Long id) {
         if (id == null){
             throw new BadRequestException("Id vazio, por favor informe um id válido");
         }
         try {
-            return repository.findByGuestId(id)
+            return repository.findByCheckinId(id)
                     .orElseThrow(()-> new BadRequestException("não há nenhum checkout associado a esse cliente"));
         }catch (BadRequestException e){
             throw new BadRequestException(e.getMessage());
@@ -93,7 +91,7 @@ public class CheckoutService {
             for(Guest guest: guestList){
                 BigDecimal valorGastoTotal;
                 BigDecimal valorGastoAtual;
-                List<Checkout> todosCheckouts = findByGuestId(guest.getId());
+                List<Checkout> todosCheckouts = findByCheckinId(guest.getId());
                 if(todosCheckouts.isEmpty()){
                     ResponseDTO responseDTO = ResponseDTO.builder()
                             .guest(guest)
