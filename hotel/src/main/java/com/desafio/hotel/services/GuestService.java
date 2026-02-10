@@ -79,7 +79,7 @@ public class GuestService {
         GuestSpecification guestSpecification;
         guestSpecification=GuestSpecification.builder()
                 .criteria(SearchCriteria.builder()
-                        .key("nome")
+                        .key("documento")
                         .value(document)
                         .operation("%")
                         .build())
