@@ -41,15 +41,15 @@ class CheckoutRepositoryTest {
         Checkout checkoutCreated = checkout;
         guestRepository.save(guestCreated);
         checkoutRepository.save(checkoutCreated);
-        assertEquals("Gustavo", checkoutCreated.getGuest().getNome());
-        assertEquals("23583290", checkoutCreated.getGuest().getDocumento());
-        assertEquals("111222333444", checkoutCreated.getGuest().getTelefone());
-        assertTrue(checkoutCreated.getGuest().isDentroHotel());
+        assertEquals("Gustavo", checkoutCreated.getCheckin().getGuest().getNome());
+        assertEquals("23583290", checkoutCreated.getCheckin().getGuest().getDocumento());
+        assertEquals("111222333444", checkoutCreated.getCheckin().getGuest().getTelefone());
+        assertTrue(checkoutCreated.getCheckin().getGuest().isDentroHotel());
         assertEquals(1L, checkout.getId());
         assertEquals(BigDecimal.valueOf(100), checkoutCreated.getValorTotal());
-        assertTrue(checkoutCreated.isAdicionalVeiculo());
+        assertTrue(checkoutCreated.getCheckin().isAdicionalVeiculo());
         assertEquals(LocalDateTime.of(2025,1,2,14,0),
-                checkoutCreated.getDataEntrada());
+                checkoutCreated.getCheckin().getDataEntrada());
 
     }
 
@@ -60,9 +60,9 @@ class CheckoutRepositoryTest {
         Checkout checkooutCreated = checkout;
         List<Checkout> checkouts = Arrays.asList(checkooutCreated);
         checkoutRepository.saveAll(checkouts);
-        Optional<List<Checkout>> checkoutsFound = checkoutRepository.findByGuestId(guestCreated.getId());
+        Optional<List<Checkout>> checkoutsFound = checkoutRepository.findByCheckinId(guestCreated.getId());
         assertEquals(checkouts.size(), checkoutsFound.get().size());
-        assertEquals(checkouts.get(0).getGuest(), checkoutsFound.get().get(0).getGuest());
+        assertEquals(checkouts.get(0).getCheckin(), checkoutsFound.get().get(0).getCheckin());
         assertEquals(checkouts.get(0).getValorTotal(), checkoutsFound.get().get(0).getValorTotal());
 
     }
@@ -74,12 +74,12 @@ class CheckoutRepositoryTest {
         guestRepository.save(guestCreated);
         Checkout checkoutCreated = checkout;
         checkoutRepository.save(checkoutCreated);
-        assertEquals("Gustavo", checkoutCreated.getGuest().getNome());
-        assertEquals("23583290", checkoutCreated.getGuest().getDocumento());
-        assertEquals("111222333444", checkoutCreated.getGuest().getTelefone());
+        assertEquals("Gustavo", checkoutCreated.getCheckin().getGuest().getNome());
+        assertEquals("23583290", checkoutCreated.getCheckin().getGuest().getDocumento());
+        assertEquals("111222333444", checkoutCreated.getCheckin().getGuest().getTelefone());
         assertEquals(BigDecimal.valueOf(100), checkoutCreated.getValorTotal());
-        assertTrue(checkoutCreated.isAdicionalVeiculo());
-        assertEquals(LocalDateTime.of(2025,1,2,14,0), checkoutCreated.getDataEntrada());
+        assertTrue(checkoutCreated.getCheckin().isAdicionalVeiculo());
+        assertEquals(LocalDateTime.of(2025,1,2,14,0), checkoutCreated.getCheckin().getDataEntrada());
     }
 
     @Test
@@ -94,10 +94,8 @@ class CheckoutRepositoryTest {
 
     private Checkout criarCheckout(Guest guest){
         Checkout checkout = new Checkout();
-        checkout.setGuest(guest);
-        checkout.setDataEntrada(LocalDateTime.of(2025,1,2,14,0));
+        checkout.getCheckin().setGuest(guest);
         checkout.setDataSaida(LocalDateTime.now());
-        checkout.setAdicionalVeiculo(true);
         checkout.setValorTotal(BigDecimal.valueOf(100));
         return checkout;
     }

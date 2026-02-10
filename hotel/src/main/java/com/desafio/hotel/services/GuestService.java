@@ -26,7 +26,7 @@ public class GuestService {
     public Guest cadastrarHospede(GuestDto dto){
         try {
             Guest guest = new Guest();
-            guest.setNome(dto.getNome());
+            guest.setNome(dto.getNome().toLowerCase().replace(" ","_"));
             guest.setDocumento(excluirTracosePontos(dto.getDocumento()));
             guest.setTelefone(excluirTracosePontos(dto.getTelefone()));
             guest.setDentroHotel(true);
