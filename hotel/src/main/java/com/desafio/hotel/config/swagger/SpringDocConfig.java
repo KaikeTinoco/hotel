@@ -1,4 +1,4 @@
-package com.desafio.hotel.config;
+package com.desafio.hotel.config.swagger;
 
 import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.OpenAPI;
