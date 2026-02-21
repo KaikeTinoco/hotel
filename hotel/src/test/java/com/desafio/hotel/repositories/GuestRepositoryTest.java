@@ -80,8 +80,8 @@ class GuestRepositoryTest {
     private Guest criarHospede(){
         Guest guest = new Guest();
         guest.setNome("Gustavo");
-        guest.setDocumento("23583290");
-        guest.setTelefone("111222333444");
+        guest.setDocumento("243.811.890-35");
+        guest.setTelefone("4823664376");
         guest.setDentroHotel(true);
         return guest;
     }

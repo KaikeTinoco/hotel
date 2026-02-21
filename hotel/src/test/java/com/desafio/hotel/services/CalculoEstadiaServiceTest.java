@@ -1,17 +1,20 @@
 package com.desafio.hotel.services;
 
+import com.desafio.hotel.entity.checkin.Checkin;
 import com.desafio.hotel.entity.checkout.Checkout;
 import com.desafio.hotel.entity.guest.Guest;
 import com.desafio.hotel.exceptions.BadRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+@ActiveProfiles("test")
 class CalculoEstadiaServiceTest {
 
     /*Tabela de preços
@@ -109,16 +112,6 @@ class CalculoEstadiaServiceTest {
         assertThrows(BadRequestException.class, () -> calculoEstadiaService.calcularValorEstadia(entrada,
                 saida, false));
     }
-    
-    private Checkout criarCheckout(){
-        Guest guest = new Guest(1L, "Pedro", "123", "456", true);
-        Checkout checkout = new Checkout();
-        checkout.setGuest(guest);
-        checkout.setAdicionalVeiculo(false);
-        checkout.setDataEntrada(LocalDateTime.of(2025,1, 20, 8, 30));
-        checkout.setDataSaida(LocalDateTime.of(2025,1,23,17,0));
-        return checkout;
-    }
 
     @Test
     void calcularValorEstadiaEntradaSaidaMesmoDia() {
@@ -130,4 +123,33 @@ class CalculoEstadiaServiceTest {
         assertEquals(BigDecimal.valueOf(120), valorTotal);
     }
 
+    private Checkout criarCheckout(){
+        Guest guest = new Guest(1L, "Pedro", "123", "456", true);
+        Checkout checkout = new Checkout();
+        checkout.setCheckin(criarCheckin());
+        checkout.getCheckin().setGuest(guest);
+        checkout.getCheckin().setAdicionalVeiculo(false);
+        checkout.getCheckin().setDataEntrada(LocalDateTime.of(2025,1, 20, 8, 30));
+        checkout.setDataSaida(LocalDateTime.of(2025,1,23,17,0));
+        return checkout;
+    }
+
+    private Checkin criarCheckin(){
+        Checkin checkin = new Checkin();
+        checkin.setId(1L);
+        checkin.setGuest(criarHospede());
+        checkin.setDataEntrada(LocalDateTime.now());
+        checkin.setAdicionalVeiculo(true);
+        return checkin;
+    }
+
+    private Guest criarHospede(){
+        Guest guest = new Guest();
+        guest.setId(1L);
+        guest.setNome("Gustavo");
+        guest.setDocumento("183.079.440-07");
+        guest.setTelefone("111222333444");
+        guest.setDentroHotel(true);
+        return guest;
+    }
 }
