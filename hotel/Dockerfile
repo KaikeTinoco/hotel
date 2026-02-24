@@ -4,7 +4,7 @@ COPY src /app/src
 COPY pom.xml /app
 
 WORKDIR /app
-RUN mvn clean install -Dspring.profiles.active=test
+RUN mvn clean install
 
 FROM eclipse-temurin:17-jre
 
