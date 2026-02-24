@@ -1,7 +1,5 @@
-version: '3.8'
 
 services:
-  # Serviço do Banco de Dados
   postgres:
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d hotel_db" ]
@@ -17,9 +15,8 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./postgres_data:/var/lib/postgresql/data
+      - ./postgres_data:/var/lib/postgresql
 
-  # Sua API Spring Boot
   app:
     build: .
     container_name: hotel-api
@@ -29,7 +26,6 @@ services:
        postgres:
           condition: service_healthy
     environment:
-      # Aqui está o segredo: usar o nome do serviço 'postgres' em vez de 'localhost'
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/hotel_db
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
