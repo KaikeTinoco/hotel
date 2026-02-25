@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -25,6 +26,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@ActiveProfiles("test")
 class CheckoutServiceTest {
     @InjectMocks
     private CheckoutService checkoutService;
@@ -139,7 +141,7 @@ class CheckoutServiceTest {
         Guest guest = new Guest();
         guest.setId(1L);
         guest.setNome("Gustavo");
-        guest.setDocumento("23583290");
+        guest.setDocumento("183.079.440-07");
         guest.setTelefone("111222333444");
         guest.setDentroHotel(true);
         return guest;

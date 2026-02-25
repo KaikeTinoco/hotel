@@ -13,11 +13,13 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ActiveProfiles("test")
 class CheckinControllerTest {
 
     @InjectMocks

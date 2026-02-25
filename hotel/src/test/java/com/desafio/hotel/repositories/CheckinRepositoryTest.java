@@ -2,6 +2,7 @@ package com.desafio.hotel.repositories;
 
 import com.desafio.hotel.entity.checkin.Checkin;
 import com.desafio.hotel.entity.guest.Guest;
+import jakarta.transaction.Transactional;
 import org.hibernate.annotations.Check;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,12 +12,14 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @ActiveProfiles("test")
+@Transactional
 class CheckinRepositoryTest {
     @Autowired
     private CheckinRepository checkinRepository;
@@ -36,12 +39,16 @@ class CheckinRepositoryTest {
     void findByGuestId() {
         Checkin checkinFound = checkin;
         guestRepository.save(checkinFound.getGuest());
-        List<Checkin> checkins = Arrays.asList(checkinFound);
-        checkinRepository.saveAll(checkins);
-        List<Checkin> checkinList = this.checkinRepository.findByGuestId(checkin.getId()).get();
-        assertEquals(checkinList.size(), checkins.size());
-        assertEquals(checkinList.get(0), checkins.get(0));
+        checkinRepository.save(checkinFound);
 
+        List<Checkin> checkins = Arrays.asList(checkinFound);
+
+        List<Checkin> checkinList = this.checkinRepository
+                .findByGuestId(checkinFound.getGuest().getId())
+                .orElse(Collections.emptyList());
+
+        assertEquals(checkins.size(), checkinList.size());
+        assertEquals(checkins.get(0), checkinList.get(0));
     }
 
     @Test
@@ -53,7 +60,7 @@ class CheckinRepositoryTest {
         List<Checkin> checkinList = this.checkinRepository.findByAdicionalVeiculo(true).get();
         assertEquals(checkinList.size(), checkins.size());
         assertEquals(checkinList.get(0), checkins.get(0));
-        assertEquals(checkinList.get(0).isAdicionalVeiculo(), true);
+        assertTrue(checkinList.get(0).isAdicionalVeiculo());
 
     }
 
@@ -62,10 +69,10 @@ class CheckinRepositoryTest {
         Checkin checkinFound = checkin;
         guestRepository.save(checkinFound.getGuest());
         checkinRepository.save(checkinFound);
-        assertEquals(checkinFound.getGuest().getNome(), "Gustavo");
-        assertEquals(checkinFound.getGuest().getTelefone(), "111222333444");
-        assertEquals(checkinFound.getGuest().isDentroHotel(), true);
-        assertEquals(checkinFound.getGuest().getDocumento(), "23583290");
+        assertEquals("gustavo", checkinFound.getGuest().getNome());
+        assertEquals("111222333444", checkinFound.getGuest().getTelefone());
+        assertTrue(checkinFound.getGuest().isDentroHotel());
+        assertEquals("18307944007", checkinFound.getGuest().getDocumento());
         assertNotNull(checkinFound.getGuest().getId());
     }
 
@@ -74,10 +81,10 @@ class CheckinRepositoryTest {
         guestRepository.save(checkin.getGuest());
         checkinRepository.save(checkin);
         Checkin checkinFound = checkinRepository.findById(checkin.getId()).get();
-        assertEquals(checkinFound.getGuest().getNome(), "Gustavo");
-        assertEquals(checkinFound.getGuest().getTelefone(), "111222333444");
-        assertEquals(checkinFound.getGuest().isDentroHotel(), true);
-        assertEquals(checkinFound.getGuest().getDocumento(), "23583290");
+        assertEquals("gustavo", checkinFound.getGuest().getNome());
+        assertEquals("111222333444", checkinFound.getGuest().getTelefone());
+        assertTrue(checkinFound.getGuest().isDentroHotel());
+        assertEquals("18307944007", checkinFound.getGuest().getDocumento());
         assertNotNull(checkinFound.getId());
         assertEquals(checkinFound.getId(), checkin.getId());
 
@@ -85,8 +92,8 @@ class CheckinRepositoryTest {
 
     private Guest criarHospede(){
         Guest guest = new Guest();
-        guest.setNome("Gustavo");
-        guest.setDocumento("23583290");
+        guest.setNome("gustavo");
+        guest.setDocumento("18307944007");
         guest.setTelefone("111222333444");
         guest.setDentroHotel(true);
         return guest;

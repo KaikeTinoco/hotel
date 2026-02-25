@@ -13,6 +13,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -21,6 +22,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ActiveProfiles("test")
 class CheckoutControllerTest {
     @InjectMocks
     private CheckoutController checkoutController;
@@ -40,9 +42,9 @@ class CheckoutControllerTest {
     void init(){
         MockitoAnnotations.openMocks(this);
         guest = criarHospede();
-        checkout = criarCheckout(guest);
         checkin = criarCheckin(guest);
         dto = criarResponseDto(guest);
+        checkout = criarCheckout(checkin);
     }
 
     @Test
@@ -67,7 +69,6 @@ class CheckoutControllerTest {
 
     @Test
     void buscarTodosHospedesForaDoHotel() {
-        //a lógica é a mesma, não muda o que tem que fazer
         ResponseDTO responseDTO = dto;
         List<ResponseDTO> dtos = Arrays.asList(responseDTO);
         Mockito.when(checkoutService.buscarTodosHospedesForaHotel()).thenReturn(dtos);
@@ -76,13 +77,12 @@ class CheckoutControllerTest {
         assertNotNull(response.getBody());
     }
 
-    private Checkout criarCheckout(Guest guest){
+    private Checkout criarCheckout(Checkin checkin){
         Checkout checkout = new Checkout();
+        checkout.setCheckin(checkin);
         checkout.setId(1L);
-        checkout.setGuest(guest);
-        checkout.setDataEntrada(LocalDateTime.of(2025,1,2,14,0));
+        checkout.getCheckin().setGuest(guest);
         checkout.setDataSaida(LocalDateTime.now());
-        checkout.setAdicionalVeiculo(true);
         checkout.setValorTotal(BigDecimal.valueOf(100));
         return checkout;
     }
@@ -91,7 +91,7 @@ class CheckoutControllerTest {
         Guest guest = new Guest();
         guest.setId(1L);
         guest.setNome("Gustavo");
-        guest.setDocumento("23583290");
+        guest.setDocumento("183.079.440-07");
         guest.setTelefone("111222333444");
         guest.setDentroHotel(true);
         return guest;

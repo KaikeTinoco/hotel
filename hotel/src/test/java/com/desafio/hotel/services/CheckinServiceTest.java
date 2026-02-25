@@ -14,6 +14,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.test.context.ActiveProfiles;
+
 import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,6 +25,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.postgresql.hostchooser.HostRequirement.any;
 
+@ActiveProfiles("test")
 class CheckinServiceTest {
     @InjectMocks
     private CheckinService checkinService;
@@ -92,7 +95,7 @@ class CheckinServiceTest {
         Guest guest = new Guest();
         guest.setId(1L);
         guest.setNome("Gustavo");
-        guest.setDocumento("23583290");
+        guest.setDocumento("183.079.440-07");
         guest.setTelefone("111222333444");
         guest.setDentroHotel(true);
         return guest;
@@ -108,7 +111,7 @@ class CheckinServiceTest {
     private GuestDto criarDto(){
         GuestDto dto = new GuestDto();
         dto.setNome("Gustavo");
-        dto.setDocumento("23583290");
+        dto.setDocumento("183.079.440-07");
         dto.setTelefone("111222333444");
         return dto;
     }

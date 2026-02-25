@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,7 +18,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
+@ActiveProfiles("test")
 class GuestServiceTest {
 
     @Mock
@@ -43,10 +44,10 @@ class GuestServiceTest {
         Guest hospedeSalvo = new Guest();
         hospedeSalvo = guestService.cadastrarHospede(dto);
 
-        assertEquals(hospedeSalvo.getNome(), "Gustavo");
-        assertEquals(hospedeSalvo.getDocumento(),"23583290");
-        assertEquals(hospedeSalvo.getTelefone(),"111222333444");
-        assertEquals(hospedeSalvo.isDentroHotel(), true);
+        assertEquals("gustavo", hospedeSalvo.getNome());
+        assertEquals("18307944007", hospedeSalvo.getDocumento());
+        assertEquals("111222333444", hospedeSalvo.getTelefone());
+        assertTrue(hospedeSalvo.isDentroHotel());
     }
 
     @Test
@@ -62,8 +63,8 @@ class GuestServiceTest {
         guest.setId(1L);
         Mockito.when(this.guestRepository.findById(1L)).thenReturn(Optional.of(guest));
         Guest guestFound = guestService.findById(1L);
-        assertEquals(guestFound.getNome(), "Gustavo");
-        assertEquals(guestFound.getDocumento(),"23583290");
+        assertEquals(guestFound.getNome(), "gustavo");
+        assertEquals(guestFound.getDocumento(),"183.079.440-07");
         assertEquals(guestFound.getTelefone(),"111222333444");
         assertEquals(guestFound.isDentroHotel(), true);
         assertNotNull(guestFound.getId());
@@ -114,8 +115,8 @@ class GuestServiceTest {
 
     private Guest criarHospede(){
         Guest guest = new Guest();
-        guest.setNome("Gustavo");
-        guest.setDocumento("23583290");
+        guest.setNome("gustavo");
+        guest.setDocumento("183.079.440-07");
         guest.setTelefone("111222333444");
         guest.setDentroHotel(true);
         return guest;
@@ -123,8 +124,8 @@ class GuestServiceTest {
 
     private GuestDto criarDto(){
         GuestDto dto = new GuestDto();
-        dto.setNome("Gustavo");
-        dto.setDocumento("23583290");
+        dto.setNome("gustavo");
+        dto.setDocumento("183.079.440-07");
         dto.setTelefone("111222333444");
         return dto;
     }
