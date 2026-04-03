@@ -16,6 +16,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "users")
 public class User implements UserDetails {
     @Id
@@ -26,6 +27,9 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
+
+    public User(String login, String encriptedPassword, UserRole role) {
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
