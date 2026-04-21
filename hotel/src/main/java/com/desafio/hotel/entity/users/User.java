@@ -28,26 +28,26 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    public User(String login, String encriptedPassword, UserRole role) {
-    }
 
+
+    //Spring Security só aceita ROLE_ADMIN e por assim vai, por isso o do ROLE_ADMIN
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (this.role == UserRole.ADMIN) {
-            return List.of(new SimpleGrantedAuthority("ADMIN"), new SimpleGrantedAuthority("USER"));
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
         } else {
-            return List.of(new SimpleGrantedAuthority("USER"));
+            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
         }
     }
 
     @Override
     public @Nullable String getPassword() {
-        return "";
+         return this.password;
     }
 
     @Override
     public String getUsername() {
-        return "";
+        return this.login;
     }
 
     @Override
