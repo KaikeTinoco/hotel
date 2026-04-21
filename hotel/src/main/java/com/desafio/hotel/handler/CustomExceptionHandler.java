@@ -3,6 +3,7 @@ package com.desafio.hotel.handler;
 import com.desafio.hotel.dto.error.ErrorResponseDTO;
 import com.desafio.hotel.exceptions.BadRequestException;
 import com.desafio.hotel.exceptions.GuestNotFoundException;
+import com.desafio.hotel.exceptions.UserLoginAlreadyTaken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -38,5 +39,14 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                 .message(e.getMessage())
                 .build();
         return new ResponseEntity<>(dto, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(UserLoginAlreadyTaken.class)
+    private ResponseEntity<?> exception(UserLoginAlreadyTaken e){
+        ErrorResponseDTO dto = ErrorResponseDTO.builder()
+                .status_code(HttpStatus.BAD_REQUEST.value())
+                .message(e.getMessage())
+                .build();
+        return new ResponseEntity<>(dto, HttpStatus.BAD_REQUEST);
     }
 }
