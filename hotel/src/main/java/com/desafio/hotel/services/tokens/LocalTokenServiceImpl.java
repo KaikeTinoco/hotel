@@ -12,11 +12,32 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
+/**
+ * Implementação do serviço de gerenciamento de tokens JWT.
+ *
+ * <p>Responsável por gerar e validar tokens JWT usando a biblioteca Auth0.
+ * Os tokens possuem validade de 2 horas após sua geração.</p>
+ *
+ * @author Kaike Tinoco
+ * @version 1.0
+ * @since 1.0
+ */
 @Service
 public class LocalTokenServiceImpl implements LocalTokenService {
+    /** Chave secreta para assinatura e validação de tokens */
     @Value("${api.security.token.secret}")
     private String secret;
 
+    /**
+     * Gera um novo token JWT para um usuário.
+     *
+     * <p>O token é assinado com HMAC256 e contém informações do usuário.
+     * Válido por 2 horas.</p>
+     *
+     * @param user usuário para o qual gerar o token
+     * @return token JWT gerado
+     * @throws RuntimeException se houver erro na geração do token
+     */
     @Override
     public String generateToken(User user) {
         try {
@@ -31,7 +52,13 @@ public class LocalTokenServiceImpl implements LocalTokenService {
         }
     }
 
-
+    /**
+     * Valida um token JWT e extrai o login do usuário.
+     *
+     * @param token token JWT a ser validado
+     * @return login do usuário contido no token
+     * @throws RuntimeException se o token for inválido ou expirado
+     */
     public String validateToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
@@ -46,6 +73,13 @@ public class LocalTokenServiceImpl implements LocalTokenService {
         }
     }
 
+    /**
+     * Gera a data de expiração do token.
+     *
+     * <p>Define o token para expirar 2 horas após a geração, no fuso horário -03:00.</p>
+     *
+     * @return Instant representando a data de expiração
+     */
     private Instant generateExpirationDate() {
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }

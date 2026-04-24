@@ -15,6 +15,16 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ * Filtro de segurança para validação de tokens JWT.
+ *
+ * <p>Executa uma vez por requisição HTTP para validar tokens JWT e
+ * autenticar usuários baseado nas informações do token.</p>
+ *
+ * @author Kaike Tinoco
+ * @version 1.0
+ * @since 1.0
+ */
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
     private final LocalTokenServiceImpl localTokenService;
@@ -26,7 +36,18 @@ public class SecurityFilter extends OncePerRequestFilter {
         this.userRepository = userRepository;
     }
 
-
+    /**
+     * Executa a lógica de filtro de autenticação.
+     *
+     * <p>Valida o token JWT presente no header Authorization e,
+     * se válido, autentica o usuário no contexto de segurança.</p>
+     *
+     * @param request requisição HTTP
+     * @param response resposta HTTP
+     * @param filterChain cadeia de filtros
+     * @throws ServletException se houver erro no processamento
+     * @throws IOException se houver erro de I/O
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var token = this.recoverToken(request);
@@ -34,17 +55,21 @@ public class SecurityFilter extends OncePerRequestFilter {
             var login = localTokenService.validateToken(token);
             UserDetails user = userRepository.findByLogin(login);
             var authentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
-            //verifica e salva o user no contexto da autenticação
-            //se não encontrar token, só chama o próximo filtro
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-        //essa linha informa ao spring que o filtro já acabou e pode chamar o próximo filtro
         filterChain.doFilter(request,response);
     }
 
+    /**
+     * Extrai o token JWT do header Authorization.
+     *
+     * <p>Espera o formato "Bearer <token>".</p>
+     *
+     * @param request requisição HTTP
+     * @return token extraído ou null se não encontrado
+     */
     private String recoverToken(HttpServletRequest request) {
         var header = request.getHeader("Authorization");
-        //como estamos usando JWT Bearer para auth, o user é o Bearer do token
         if (header == null || !header.startsWith("Bearer")) {
             return null;
         }

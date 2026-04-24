@@ -12,11 +12,27 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Serviço responsável pela gestão de check-ins de hóspedes.
+ *
+ * <p>Esta classe fornece operações para criar, deletar e recuperar check-ins
+ * de hóspedes no hotel.</p>
+ *
+ * <p>Funcionalidades principais:</p>
+ * <ul>
+ *   <li>Criar um novo check-in para um hóspede</li>
+ *   <li>Deletar um check-in existente</li>
+ *   <li>Buscar check-ins por ID do hóspede ou por ID do check-in</li>
+ * </ul>
+ *
+ * @author Kaike Tinoco
+ * @version 1.0
+ * @since 1.0
+ */
 @Service
 public class CheckinService {
 
     private final CheckinRepository repository;
-
 
     private final GuestService guestService;
 
@@ -26,7 +42,13 @@ public class CheckinService {
         this.guestService = guestService;
     }
 
-
+    /**
+     * Cria um novo check-in para um hóspede.
+     *
+     * @param dto objeto contendo os dados do check-in (ID do hóspede, data de entrada e adicional de veículo)
+     * @return o objeto Checkin criado
+     * @throws BadRequestException se houver erro durante a criação do check-in
+     */
     public Checkin criarCheckin(CheckinCreateDto dto) {
         try {
             Checkin checkin = new Checkin();
@@ -41,6 +63,13 @@ public class CheckinService {
         }
     }
 
+    /**
+     * Deleta um check-in existente.
+     *
+     * @param id identificador único do check-in a ser deletado
+     * @return mensagem confirmando a exclusão do check-in
+     * @throws BadRequestException se o ID for nulo ou o check-in não existir
+     */
     public String deletarCheckin(Long id) {
         if (id == null){
             throw new BadRequestException("Por favor informe um id válido");
@@ -55,6 +84,13 @@ public class CheckinService {
         }
     }
 
+    /**
+     * Busca todos os check-ins associados a um hóspede específico.
+     *
+     * @param id identificador único do hóspede
+     * @return lista de check-ins do hóspede
+     * @throws BadRequestException se o ID for nulo ou nenhum check-in for encontrado
+     */
     public List<Checkin> findByGuestId(Long id)  {
         if (id == null){
             throw new BadRequestException("Por favor informe um id válido");
@@ -63,6 +99,14 @@ public class CheckinService {
                 -> new BadRequestException("não foi possivel encontrar checkins associados a este hospede "));
     }
 
+    /**
+     * Busca um check-in específico por ID.
+     *
+     * @param id identificador único do check-in
+     * @return o check-in encontrado
+     * @throws BadRequestException se o ID for nulo
+     * @throws GuestNotFoundException se o check-in não for encontrado
+     */
     public Checkin findById(Long id)  {
         if (id == null){
             throw new BadRequestException("Por favor informe um id válido");
@@ -73,6 +117,3 @@ public class CheckinService {
 
 
 }
-
-
-

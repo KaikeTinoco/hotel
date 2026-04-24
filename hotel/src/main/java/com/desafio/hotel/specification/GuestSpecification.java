@@ -11,6 +11,16 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 
+/**
+ * Especificação para consultas dinâmicas de hóspedes.
+ *
+ * <p>Implementa Specification do Spring Data JPA para permitir buscas flexíveis
+ * em entidades Guest baseadas em critérios de busca.</p>
+ *
+ * @author Kaike Tinoco
+ * @version 1.0
+ * @since 1.0
+ */
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

@@ -9,6 +9,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * Implementação do serviço de autenticação de usuários.
+ *
+ * <p>Responsável por gerenciar o carregamento de usuários e registro de novos
+ * usuários no sistema com criptografia de senha.</p>
+ *
+ * @author Kaike Tinoco
+ * @version 1.0
+ * @since 1.0
+ */
 @Service
 public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
@@ -18,13 +28,23 @@ public class AuthServiceImpl implements AuthService {
         this.userRepository = userRepository;
     }
 
-
-
+    /**
+     * Carrega um usuário pelo nome de usuário (login).
+     *
+     * @param username nome de usuário a ser carregado
+     * @return detalhes do usuário ou null se não encontrado
+     */
     @Override
     public UserDetails loadUserByUsername(String username) {
         return userRepository.findByLogin(username);
     }
 
+    /**
+     * Registra um novo usuário no sistema com senha criptografada.
+     *
+     * @param dto objeto contendo login, senha e função do usuário
+     * @throws UserLoginAlreadyTaken se o login já existe no sistema
+     */
     @Override
     public void register(RegisterDTO dto) {
         if (this.userRepository.findByLogin(dto.login()) != null) {

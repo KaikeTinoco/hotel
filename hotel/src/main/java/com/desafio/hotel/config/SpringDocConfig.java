@@ -10,8 +10,23 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Arrays;
 
+/**
+ * Configuração do SpringDoc OpenAPI para documentação de Swagger/OpenAPI 3.0.
+ *
+ * <p>Define as informações gerais da API, incluindo título, versão, descrição
+ * e documentação externa.</p>
+ *
+ * @author Desafio Hotel
+ * @version 1.0
+ * @since 1.0
+ */
 @Configuration
 public class SpringDocConfig {
+    /**
+     * Configura as informações da OpenAPI e metadados da API.
+     *
+     * @return objeto OpenAPI com configurações da documentação
+     */
     @Bean
     public OpenAPI openAPI(){
         return new OpenAPI()
