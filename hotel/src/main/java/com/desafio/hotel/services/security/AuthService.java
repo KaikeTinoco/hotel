@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
  * <p>Estende UserDetailsService do Spring Security e fornece operações
  * para carregar usuários e registrar novos usuários no sistema.</p>
  *
- * @author Desafio Hotel
+ * @author Kaike Tinoco
  * @version 1.0
  * @since 1.0
  */
@@ -30,4 +30,3 @@ public interface AuthService extends UserDetailsService {
      */
     void register(RegisterDTO dto);
 }
-

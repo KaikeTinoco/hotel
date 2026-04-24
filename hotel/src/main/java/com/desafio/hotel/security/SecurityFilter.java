@@ -21,7 +21,7 @@ import java.io.IOException;
  * <p>Executa uma vez por requisição HTTP para validar tokens JWT e
  * autenticar usuários baseado nas informações do token.</p>
  *
- * @author Desafio Hotel
+ * @author Kaike Tinoco
  * @version 1.0
  * @since 1.0
  */

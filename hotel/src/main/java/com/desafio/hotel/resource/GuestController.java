@@ -14,7 +14,7 @@ import java.util.List;
  *
  * <p>Fornece endpoints para cadastrar, buscar, deletar e filtrar hóspedes.</p>
  *
- * @author Desafio Hotel
+ * @author Kaike Tinoco
  * @version 1.0
  * @since 1.0
  */

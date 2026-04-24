@@ -29,7 +29,7 @@ import java.util.List;
  *   <li>Calcular custos totais de hospedagens</li>
  * </ul>
  *
- * @author Desafio Hotel
+ * @author Kaike Tinoco
  * @version 1.0
  * @since 1.0
  */

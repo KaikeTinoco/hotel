@@ -18,7 +18,7 @@ import java.time.ZoneOffset;
  * <p>Responsável por gerar e validar tokens JWT usando a biblioteca Auth0.
  * Os tokens possuem validade de 2 horas após sua geração.</p>
  *
- * @author Desafio Hotel
+ * @author Kaike Tinoco
  * @version 1.0
  * @since 1.0
  */

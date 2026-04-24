@@ -21,7 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * <p>Define políticas de autenticação, autorização e gerenciamento de sessão
  * usando Spring Security com JWT (JSON Web Tokens).</p>
  *
- * @author Desafio Hotel
+ * @author Kaike Tinoco
  * @version 1.0
  * @since 1.0
  */

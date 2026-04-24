@@ -25,7 +25,7 @@ import java.util.List;
  *   <li>Buscar check-ins por ID do hóspede ou por ID do check-in</li>
  * </ul>
  *
- * @author Desafio Hotel
+ * @author Kaike Tinoco
  * @version 1.0
  * @since 1.0
  */
@@ -117,6 +117,3 @@ public class CheckinService {
 
 
 }
-
-
-

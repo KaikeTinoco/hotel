@@ -17,7 +17,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
  * <p>Intercepta exceções lançadas em toda a aplicação e as converte em
  * respostas HTTP apropriadas com mensagens de erro formatadas.</p>
  *
- * @author Desafio Hotel
+ * @author Kaike Tinoco
  * @version 1.0
  * @since 1.0
  */

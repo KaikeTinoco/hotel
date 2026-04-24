@@ -28,7 +28,7 @@ import java.util.List;
  *   <li>Normalização de dados (remoção de caracteres especiais)</li>
  * </ul>
  *
- * @author Desafio Hotel
+ * @author Kaike Tinoco
  * @version 1.0
  * @since 1.0
  */

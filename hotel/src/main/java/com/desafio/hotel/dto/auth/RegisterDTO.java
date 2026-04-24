@@ -12,7 +12,7 @@ import com.desafio.hotel.entity.users.UserRole;
  * @param password senha do usuário (será criptografada no servidor)
  * @param role função do usuário (USER ou ADMIN)
  *
- * @author Desafio Hotel
+ * @author Kaike Tinoco
  * @version 1.0
  * @since 1.0
  */

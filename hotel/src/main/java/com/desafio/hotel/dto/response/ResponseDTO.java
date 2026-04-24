@@ -14,7 +14,7 @@ import java.math.BigDecimal;
  * <p>Retorna informações completas de um hóspede incluindo o valor total
  * gasto em todas as suas hospedagens e o valor da última hospedagem.</p>
  *
- * @author Desafio Hotel
+ * @author Kaike Tinoco
  * @version 1.0
  * @since 1.0
  */

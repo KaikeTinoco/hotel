@@ -8,7 +8,7 @@ import com.desafio.hotel.entity.users.User;
  * <p>Fornece operações para gerar e validar tokens JWT usados na autenticação
  * de usuários na API.</p>
  *
- * @author Desafio Hotel
+ * @author Kaike Tinoco
  * @version 1.0
  * @since 1.0
  */

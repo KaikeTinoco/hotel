@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
  * <p>Fornece operações CRUD e autenticação para a entidade User,
  * integrado com Spring Security.</p>
  *
- * @author Desafio Hotel
+ * @author Kaike Tinoco
  * @version 1.0
  * @since 1.0
  */

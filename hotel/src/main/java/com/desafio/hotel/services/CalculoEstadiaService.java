@@ -25,7 +25,7 @@ import java.util.*;
  *   <li>Cálculo do total de despesas por cliente ao longo de múltiplas estadias</li>
  * </ul>
  *
- * @author Desafio Hotel
+ * @author Kaike Tinoco
  * @version 1.0
  * @since 1.0
  */
@@ -154,4 +154,3 @@ public class CalculoEstadiaService {
         return totalAtual;
     }
 }
-

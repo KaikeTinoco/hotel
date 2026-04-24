@@ -12,7 +12,7 @@ import java.util.Optional;
  *
  * <p>Fornece operações CRUD e consultas customizadas para a entidade Checkout.</p>
  *
- * @author Desafio Hotel
+ * @author Kaike Tinoco
  * @version 1.0
  * @since 1.0
  */

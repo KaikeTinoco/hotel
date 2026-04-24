@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
  * <p>Responsável por gerenciar o carregamento de usuários e registro de novos
  * usuários no sistema com criptografia de senha.</p>
  *
- * @author Desafio Hotel
+ * @author Kaike Tinoco
  * @version 1.0
  * @since 1.0
  */

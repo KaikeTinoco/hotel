@@ -209,6 +209,32 @@ realizaram check-out
 
 ------------------------------------------------------------------------
 
+## 🔐 Autenticação via JWT
+
+A API utiliza **JSON Web Tokens (JWT)** para autenticação e autorização de usuários. Todos os endpoints, exceto os de autenticação, requerem um token válido no header `Authorization`.
+
+### Endpoints de Autenticação
+
+  ----------------------------------------------------------------------------
+Método                  Endpoint                     Descrição
+  ----------------------- ---------------------------- -----------------------
+POST                    /auth/login                  Realiza login e retorna
+token JWT
+
+POST                    /auth/register               Registra um novo usuário
+no sistema
+  ----------------------------------------------------------------------------
+
+### Como Usar
+
+1. **Registrar um usuário:** Envie uma requisição POST para `/auth/register` com login, senha e role (USER ou ADMIN).
+2. **Fazer login:** Envie uma requisição POST para `/auth/login` com login e senha. Receberá um token JWT.
+3. **Acessar endpoints protegidos:** Inclua o token no header: `Authorization: Bearer <token>`.
+
+Os tokens têm validade de **2 horas**. Após expirar, é necessário fazer login novamente.
+
+------------------------------------------------------------------------
+
 # 💰 Regras de Precificação
 
 O valor da estadia é calculado automaticamente com base nas seguintes
@@ -219,6 +245,22 @@ regras:
 -   🚗 **Estacionamento:** Acréscimo de **R\$20,00 por dia**
 -   ⏰ **Check-out tardio:** Caso o check-out seja realizado **após
     16:30**, será cobrada **uma diária adicional**
+
+------------------------------------------------------------------------
+
+# 📑 Documentação da API
+
+A documentação completa da API é gerada automaticamente usando **SpringDoc OpenAPI 3 (Swagger)**.
+
+-   **Interface interativa:** Acesse `http://localhost:8081/swagger-ui.html` para explorar e testar todos os endpoints diretamente no navegador.
+-   **Especificação OpenAPI:** Disponível em `http://localhost:8081/v3/api-docs` para integração com outras ferramentas.
+
+A documentação inclui:
+- Descrição detalhada de cada endpoint
+- Parâmetros obrigatórios e opcionais
+- Exemplos de requisições e respostas
+- Códigos de status HTTP
+- Autenticação necessária para endpoints protegidos
 
 ------------------------------------------------------------------------
 
