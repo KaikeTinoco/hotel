@@ -21,6 +21,16 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Testes para o controlador de hóspedes.
+ *
+ * <p>Verifica as operações de cadastro, busca e deleção de hóspedes
+ * através dos endpoints REST.</p>
+ *
+ * @author Desafio Hotel
+ * @version 1.0
+ * @since 1.0
+ */
 @ActiveProfiles("test")
 class GuestControllerTest {
     @InjectMocks
@@ -29,79 +39,99 @@ class GuestControllerTest {
     @Mock
     private GuestService guestService;
 
-    private Guest guest;
+    private Guest hospede;
 
     private GuestDto dto;
 
     private Checkin checkin;
 
     @BeforeEach
-    void init(){
+    void inicializar(){
         MockitoAnnotations.initMocks(this);
-        guest = criarHospede();
-        checkin = criarCheckin(guest);
+        hospede = criarHospede();
+        checkin = criarCheckin(hospede);
         dto = criarDto();
     }
 
     @Test
-    void cadastrarHospede() {
-        Guest guestCadastrado = guest;
-        guestCadastrado.setId(1L);
-        Mockito.when(guestService.cadastrarHospede(dto)).thenReturn(guestCadastrado);
+    void cadastrarHospedeComSucesso() {
+        // Arrange
+        Guest hospedeCadastrado = hospede;
+        hospedeCadastrado.setId(1L);
+        Mockito.when(guestService.cadastrarHospede(dto)).thenReturn(hospedeCadastrado);
+
+        // Act
         ResponseEntity response = guestController.cadastrarHospede(dto);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode(),
+                "O status deve ser OK");
+        assertNotNull(response.getBody(),
+                "O corpo da resposta não pode ser nulo");
     }
 
     @Test
-    void buscarTodosHospedes() {
-        List<Guest> guests = Arrays.asList(guest);
-        Mockito.when(guestService.buscarTodosHospedes()).thenReturn(guests);
+    void buscarTodosHospedesComSucesso() {
+        // Arrange
+        List<Guest> hospedes = Arrays.asList(hospede);
+        Mockito.when(guestService.buscarTodosHospedes()).thenReturn(hospedes);
+
+        // Act
         ResponseEntity response = guestController.buscarTodosHospedes();
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-    }
 
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode(),
+                "O status deve ser OK");
+        assertNotNull(response.getBody(),
+                "O corpo da resposta não pode ser nulo");
+    }
 
     @Test
-    void deletarHospede() {
-        Guest guestDeletado = guest;
-        guestDeletado.setId(1L);
-        Mockito.when(guestService.cadastrarHospede(dto)).thenReturn(guestDeletado);
-        Mockito.when(guestService.findById(guestDeletado.getId())).thenReturn(guestDeletado);
+    void deletarHospedeComSucesso() {
+        // Arrange
+        Guest hospedeDeletado = hospede;
+        hospedeDeletado.setId(1L);
+        Mockito.when(guestService.cadastrarHospede(dto)).thenReturn(hospedeDeletado);
+        Mockito.when(guestService.findById(hospedeDeletado.getId())).thenReturn(hospedeDeletado);
 
-        ResponseEntity response = guestController.deletarHospede(guestDeletado.getId());
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        // Act
+        ResponseEntity response = guestController.deletarHospede(hospedeDeletado.getId());
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode(),
+                "O status deve ser OK");
     }
+
+    // ...existing code...
 
     private Checkout criarCheckout(){
-        Guest guest = new Guest(1L, "Pedro", "000.240.470-23", "6724581391", true);
+        Guest hospede = new Guest(1L, "Pedro", "000.240.470-23", "6724581391", true);
         Checkout checkout = new Checkout();
-        checkout.setCheckin(criarCheckin(guest));
-        checkout.getCheckin().setGuest(guest);
+        checkout.setCheckin(criarCheckin(hospede));
+        checkout.getCheckin().setGuest(hospede);
         checkout.getCheckin().setAdicionalVeiculo(false);
         checkout.getCheckin().setDataEntrada(LocalDateTime.of(2025,1, 20, 8, 30));
         checkout.setDataSaida(LocalDateTime.of(2025,1,23,17,0));
         return checkout;
     }
 
-    private Checkin criarCheckin(Guest guest){
+    private Checkin criarCheckin(Guest hospede){
         Checkin checkin = new Checkin();
         checkin.setId(1L);
-        checkin.setGuest(guest);
+        checkin.setGuest(hospede);
         checkin.setDataEntrada(LocalDateTime.now());
         checkin.setAdicionalVeiculo(true);
         return checkin;
     }
 
     private Guest criarHospede(){
-        Guest guest = new Guest();
-        guest.setId(1L);
-        guest.setNome("Gustavo");
-        guest.setDocumento("183.079.440-07");
-        guest.setTelefone("111222333444");
-        guest.setDentroHotel(true);
-        return guest;
+        Guest hospede = new Guest();
+        hospede.setId(1L);
+        hospede.setNome("Gustavo");
+        hospede.setDocumento("183.079.440-07");
+        hospede.setTelefone("111222333444");
+        hospede.setDentroHotel(true);
+        return hospede;
     }
 
     private GuestDto criarDto(){
