@@ -90,20 +90,20 @@ class CheckoutServiceTest {
         Checkout checkoutCriado = checkoutService.criarCheckout(checkin.getId());
 
         // Assert
-        assertEquals(checkoutBase.getCheckin().getGuest().getNome(),
-                checkoutCriado.getCheckin().getGuest().getNome(),
+        assertEquals(checkoutBase.getCheckin().getGuest().getNome(), 
+                checkoutCriado.getCheckin().getGuest().getNome(), 
                 "O nome do hóspede deve corresponder");
-        assertEquals(checkoutBase.getCheckin().getGuest().getDocumento(),
-                checkoutCriado.getCheckin().getGuest().getDocumento(),
+        assertEquals(checkoutBase.getCheckin().getGuest().getDocumento(), 
+                checkoutCriado.getCheckin().getGuest().getDocumento(), 
                 "O documento do hóspede deve corresponder");
-        assertEquals(checkoutBase.getCheckin().getGuest().getTelefone(),
-                checkoutCriado.getCheckin().getGuest().getTelefone(),
+        assertEquals(checkoutBase.getCheckin().getGuest().getTelefone(), 
+                checkoutCriado.getCheckin().getGuest().getTelefone(), 
                 "O telefone do hóspede deve corresponder");
-        assertEquals(checkoutBase.getCheckin().getDataEntrada(),
-                checkoutCriado.getCheckin().getDataEntrada(),
+        assertEquals(checkoutBase.getCheckin().getDataEntrada(), 
+                checkoutCriado.getCheckin().getDataEntrada(), 
                 "A data de entrada deve corresponder");
-        assertEquals(checkoutBase.getCheckin().isAdicionalVeiculo(),
-                checkoutCriado.getCheckin().isAdicionalVeiculo(),
+        assertEquals(checkoutBase.getCheckin().isAdicionalVeiculo(), 
+                checkoutCriado.getCheckin().isAdicionalVeiculo(), 
                 "O adicional de veículo deve corresponder");
     }
 
@@ -119,15 +119,15 @@ class CheckoutServiceTest {
         List<Checkout> checkouts = checkoutService.findByCheckinId(hospede.getId());
 
         // Assert
-        assertEquals(checkout, checkouts.get(0),
+        assertEquals(checkout, checkouts.get(0), 
                 "O primeiro checkout deve corresponder");
     }
 
     @Test
     void buscarCheckoutPorIdNulo() {
         // Act & Assert
-        assertThrows(BadRequestException.class,
-                () -> checkoutService.findByCheckinId(null),
+        assertThrows(BadRequestException.class, 
+                () -> checkoutService.findByCheckinId(null), 
                 "Deve lançar exceção para ID nulo");
     }
 
@@ -146,7 +146,7 @@ class CheckoutServiceTest {
         List<ResponseDTO> dtos = checkoutService.buscarTodosHospedesNoHotel();
 
         // Assert
-        assertEquals(responseDTO, dtos.get(0),
+        assertEquals(responseDTO, dtos.get(0), 
                 "O primeiro DTO deve corresponder");
     }
 
@@ -165,7 +165,7 @@ class CheckoutServiceTest {
         List<ResponseDTO> dtos = checkoutService.buscarTodosHospedesForaHotel();
 
         // Assert
-        assertEquals(responseDTO, dtos.get(0),
+        assertEquals(responseDTO, dtos.get(0), 
                 "O primeiro DTO deve corresponder");
     }
 
@@ -175,8 +175,8 @@ class CheckoutServiceTest {
         Mockito.when(guestService.buscarHospedeDentroOuForaHotel(true)).thenReturn(null);
 
         // Act & Assert
-        assertThrows(BadRequestException.class,
-                () -> checkoutService.buscarTodosHospedesNoHotel(),
+        assertThrows(BadRequestException.class, 
+                () -> checkoutService.buscarTodosHospedesNoHotel(), 
                 "Deve lançar exceção quando lista é nula");
     }
 

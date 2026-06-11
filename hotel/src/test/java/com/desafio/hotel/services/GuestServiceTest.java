@@ -57,13 +57,13 @@ class GuestServiceTest {
         Guest hospedeSalvo = guestService.cadastrarHospede(dto);
 
         // Assert
-        assertEquals("gustavo", hospedeSalvo.getNome(),
+        assertEquals("gustavo", hospedeSalvo.getNome(), 
                 "O nome deve ser 'gustavo'");
-        assertEquals("18307944007", hospedeSalvo.getDocumento(),
+        assertEquals("18307944007", hospedeSalvo.getDocumento(), 
                 "O documento deve ser validado");
-        assertEquals("111222333444", hospedeSalvo.getTelefone(),
+        assertEquals("111222333444", hospedeSalvo.getTelefone(), 
                 "O telefone deve ser preservado");
-        assertTrue(hospedeSalvo.isDentroHotel(),
+        assertTrue(hospedeSalvo.isDentroHotel(), 
                 "O hóspede deve estar dentro do hotel por padrão");
     }
 
@@ -77,7 +77,7 @@ class GuestServiceTest {
         String mensagem = guestService.deletarGuestById(hospede.getId());
 
         // Assert
-        assertEquals("Hóspede deletado com sucesso!", mensagem,
+        assertEquals("Hóspede deletado com sucesso!", mensagem, 
                 "A mensagem de sucesso deve ser retornada");
     }
 
@@ -91,15 +91,14 @@ class GuestServiceTest {
         Guest hospedeBuscado = guestService.findById(1L);
 
         // Assert
-        assertEquals(hospedeBuscado.getNome(), "gustavo",
+        assertEquals("gustavo", hospedeBuscado.getNome(),
                 "O nome deve corresponder");
-        assertEquals(hospedeBuscado.getDocumento(),"183.079.440-07",
+        assertEquals("183.079.440-07", hospedeBuscado.getDocumento(),
                 "O documento deve corresponder");
-        assertEquals(hospedeBuscado.getTelefone(),"111222333444",
+        assertEquals("111222333444", hospedeBuscado.getTelefone(),
                 "O telefone deve corresponder");
-        assertEquals(hospedeBuscado.isDentroHotel(), true,
-                "O status dentro/fora do hotel deve ser verdadeiro");
-        assertNotNull(hospedeBuscado.getId(),
+        assertTrue(hospedeBuscado.isDentroHotel(), "O status dentro/fora do hotel deve ser verdadeiro");
+        assertNotNull(hospedeBuscado.getId(), 
                 "O ID não pode ser nulo");
     }
 
@@ -114,15 +113,15 @@ class GuestServiceTest {
         List<Guest> hospedBuscados = guestService.buscarTodosHospedes();
 
         // Assert
-        assertEquals(hospedes.size(), hospedBuscados.size(),
+        assertEquals(hospedes.size(), hospedBuscados.size(), 
                 "O tamanho da lista deve ser igual");
-        assertEquals(hospedes.get(0).getNome(), hospedBuscados.get(0).getNome(),
+        assertEquals(hospedes.get(0).getNome(), hospedBuscados.get(0).getNome(), 
                 "O primeiro hóspede deve ter o mesmo nome");
-        assertEquals(hospedes.get(0).getDocumento(), hospedBuscados.get(0).getDocumento(),
+        assertEquals(hospedes.get(0).getDocumento(), hospedBuscados.get(0).getDocumento(), 
                 "O primeiro hóspede deve ter o mesmo documento");
-        assertEquals(hospedes.get(0).getTelefone(), hospedBuscados.get(0).getTelefone(),
+        assertEquals(hospedes.get(0).getTelefone(), hospedBuscados.get(0).getTelefone(), 
                 "O primeiro hóspede deve ter o mesmo telefone");
-        assertEquals(hospedes.get(0).isDentroHotel(), hospedBuscados.get(0).isDentroHotel(),
+        assertEquals(hospedes.get(0).isDentroHotel(), hospedBuscados.get(0).isDentroHotel(), 
                 "O primeiro hóspede deve ter o mesmo status");
     }
 
@@ -137,15 +136,15 @@ class GuestServiceTest {
         List<Guest> hospedBuscados = guestService.buscarHospedeDentroOuForaHotel(true);
 
         // Assert
-        assertEquals(hospedBuscados.size(), hospedes.size(),
+        assertEquals(hospedBuscados.size(), hospedes.size(), 
                 "O tamanho deve ser igual");
-        assertEquals(hospedBuscados.get(0).getNome(), hospedes.get(0).getNome(),
+        assertEquals(hospedBuscados.get(0).getNome(), hospedes.get(0).getNome(), 
                 "O nome deve corresponder");
-        assertEquals(hospedBuscados.get(0).getDocumento(), hospedes.get(0).getDocumento(),
+        assertEquals(hospedBuscados.get(0).getDocumento(), hospedes.get(0).getDocumento(), 
                 "O documento deve corresponder");
-        assertEquals(hospedBuscados.get(0).getTelefone(), hospedes.get(0).getTelefone(),
+        assertEquals(hospedBuscados.get(0).getTelefone(), hospedes.get(0).getTelefone(), 
                 "O telefone deve corresponder");
-        assertEquals(hospedBuscados.get(0).isDentroHotel(), hospedes.get(0).isDentroHotel(),
+        assertEquals(hospedBuscados.get(0).isDentroHotel(), hospedes.get(0).isDentroHotel(), 
                 "O status deve corresponder");
     }
 
@@ -161,15 +160,15 @@ class GuestServiceTest {
         List<Guest> hospedBuscados = guestService.buscarHospedeDentroOuForaHotel(false);
 
         // Assert
-        assertEquals(hospedBuscados.size(), hospedes.size(),
+        assertEquals(hospedBuscados.size(), hospedes.size(), 
                 "O tamanho deve ser igual");
-        assertEquals(hospedBuscados.get(0).getNome(), hospedes.get(0).getNome(),
+        assertEquals(hospedBuscados.get(0).getNome(), hospedes.get(0).getNome(), 
                 "O nome deve corresponder");
-        assertEquals(hospedBuscados.get(0).getDocumento(), hospedes.get(0).getDocumento(),
+        assertEquals(hospedBuscados.get(0).getDocumento(), hospedes.get(0).getDocumento(), 
                 "O documento deve corresponder");
-        assertEquals(hospedBuscados.get(0).getTelefone(), hospedes.get(0).getTelefone(),
+        assertEquals(hospedBuscados.get(0).getTelefone(), hospedes.get(0).getTelefone(), 
                 "O telefone deve corresponder");
-        assertEquals(hospedBuscados.get(0).isDentroHotel(), hospedes.get(0).isDentroHotel(),
+        assertEquals(hospedBuscados.get(0).isDentroHotel(), hospedes.get(0).isDentroHotel(), 
                 "O status deve ser falso (fora do hotel)");
     }
 
