@@ -13,7 +13,8 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: hotel_db
     ports:
-      - "5432:5432"
+      #A porta da esquerda é a porta do host (sua máquina), e a da direita é a porta do container (o banco de dados dentro do container).
+      - "5433:5432"
     volumes:
       - ./postgres_data:/var/lib/postgresql
 
