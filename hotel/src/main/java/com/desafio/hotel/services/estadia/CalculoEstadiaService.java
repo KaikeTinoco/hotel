@@ -1,4 +1,4 @@
-package com.desafio.hotel.services;
+package com.desafio.hotel.services.estadia;
 
 import com.desafio.hotel.entity.checkout.Checkout;
 import java.math.BigDecimal;

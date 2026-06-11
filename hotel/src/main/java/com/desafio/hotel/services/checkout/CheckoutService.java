@@ -1,4 +1,4 @@
-package com.desafio.hotel.services;
+package com.desafio.hotel.services.checkout;
 
 import com.desafio.hotel.dto.response.ResponseDTO;
 import com.desafio.hotel.entity.checkout.Checkout;
@@ -13,3 +13,4 @@ public interface CheckoutService {
     List<ResponseDTO> buscarTodosHospedesNoHotel();
     List<ResponseDTO> buscarTodosHospedesForaHotel();
 }
+

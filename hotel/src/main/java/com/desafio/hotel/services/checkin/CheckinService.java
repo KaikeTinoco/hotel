@@ -1,4 +1,4 @@
-package com.desafio.hotel.services;
+package com.desafio.hotel.services.checkin;
 
 import com.desafio.hotel.dto.checkin.CheckinCreateDto;
 import com.desafio.hotel.entity.checkin.Checkin;
@@ -14,3 +14,4 @@ public interface CheckinService {
     List<Checkin> findByGuestId(Long id);
     Checkin findById(Long id);
 }
+

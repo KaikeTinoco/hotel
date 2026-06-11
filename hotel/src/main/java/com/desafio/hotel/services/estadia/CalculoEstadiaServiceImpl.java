@@ -1,4 +1,4 @@
-package com.desafio.hotel.services;
+package com.desafio.hotel.services.estadia;
 
 import com.desafio.hotel.entity.checkout.Checkout;
 import com.desafio.hotel.exceptions.BadRequestException;

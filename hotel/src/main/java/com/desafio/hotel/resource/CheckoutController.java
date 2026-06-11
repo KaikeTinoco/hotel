@@ -4,7 +4,7 @@ import com.desafio.hotel.dto.response.ResponseDTO;
 import com.desafio.hotel.entity.checkin.Checkin;
 import com.desafio.hotel.entity.checkout.Checkout;
 import com.desafio.hotel.openapi.CheckoutControllerOpenApi;
-import com.desafio.hotel.services.CheckoutService;
+import com.desafio.hotel.services.checkout.CheckoutService;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

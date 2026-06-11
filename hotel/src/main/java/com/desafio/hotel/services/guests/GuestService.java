@@ -1,4 +1,4 @@
-package com.desafio.hotel.services;
+package com.desafio.hotel.services.guests;
 
 import com.desafio.hotel.dto.guest.GuestDto;
 import com.desafio.hotel.entity.guest.Guest;
@@ -15,3 +15,4 @@ public interface GuestService {
     List<Guest> buscarTodosHospedes();
     List<Guest> buscarHospedeDentroOuForaHotel(boolean dentroHotel);
 }
+

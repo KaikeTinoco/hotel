@@ -1,4 +1,4 @@
-package com.desafio.hotel.services;
+package com.desafio.hotel.services.checkin;
 
 import com.desafio.hotel.dto.checkin.CheckinCreateDto;
 import com.desafio.hotel.entity.checkin.Checkin;
@@ -6,6 +6,7 @@ import com.desafio.hotel.entity.guest.Guest;
 import com.desafio.hotel.exceptions.BadRequestException;
 import com.desafio.hotel.exceptions.GuestNotFoundException;
 import com.desafio.hotel.repositories.CheckinRepository;
+import com.desafio.hotel.services.guests.GuestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -117,8 +118,5 @@ public class CheckinServiceImpl implements CheckinService {
     }
 
 
-
 }
-
-
 

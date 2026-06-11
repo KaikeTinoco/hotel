@@ -1,4 +1,4 @@
-package com.desafio.hotel.services;
+package com.desafio.hotel.services.checkout;
 
 import com.desafio.hotel.dto.response.ResponseDTO;
 import com.desafio.hotel.entity.checkin.Checkin;
@@ -6,6 +6,9 @@ import com.desafio.hotel.entity.checkout.Checkout;
 import com.desafio.hotel.entity.guest.Guest;
 import com.desafio.hotel.exceptions.BadRequestException;
 import com.desafio.hotel.repositories.CheckoutRepository;
+import com.desafio.hotel.services.checkin.CheckinService;
+import com.desafio.hotel.services.estadia.CalculoEstadiaService;
+import com.desafio.hotel.services.guests.GuestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -172,12 +175,6 @@ public class CheckoutServiceImpl implements CheckoutService {
         }
         return response;
     }
-
-
-
-
-
-
 
 
 }
