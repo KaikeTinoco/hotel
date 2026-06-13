@@ -44,7 +44,7 @@ class CheckinServiceTest {
     private Checkin checkin;
     private CheckinCreateDto checkinDto;
     private GuestDto dto;
-
+    
     @BeforeEach
     void inicializar(){
         MockitoAnnotations.openMocks(this);
@@ -64,7 +64,7 @@ class CheckinServiceTest {
         Checkin checkinCriado = checkinService.criarCheckin(checkinDto);
 
         // Assert
-        assertEquals(hospede, checkinCriado.getGuest(),
+        assertEquals(hospede, checkinCriado.getGuest(), 
                 "O hóspede do check-in deve ser o mesmo");
     }
 
@@ -77,16 +77,16 @@ class CheckinServiceTest {
         String mensagem = checkinService.deletarCheckin(checkin.getId());
 
         // Assert
-        assertEquals("Checkin deletado com sucesso!", mensagem,
+        assertEquals("Checkin deletado com sucesso!", mensagem, 
                 "A mensagem de sucesso deve ser retornada");
     }
 
     @Test
     void deletarCheckinComIdNulo() {
         // Act & Assert
-        BadRequestException excecao = assertThrows(BadRequestException.class,
+        BadRequestException excecao = assertThrows(BadRequestException.class, 
                 () -> checkinService.deletarCheckin(null));
-        assertEquals("Por favor informe um id válido", excecao.getMessage(),
+        assertEquals("Por favor informe um id válido", excecao.getMessage(), 
                 "A mensagem de erro deve ser específica");
     }
 
@@ -101,7 +101,7 @@ class CheckinServiceTest {
         List<Checkin> checkins = checkinService.findByGuestId(hospede.getId());
 
         // Assert
-        assertEquals(checkin, checkins.get(0),
+        assertEquals(checkin, checkins.get(0), 
                 "O primeiro check-in deve corresponder");
     }
 
@@ -114,16 +114,16 @@ class CheckinServiceTest {
         Checkin checkinBuscado = checkinService.findById(checkin.getId());
 
         // Assert
-        assertEquals(checkin, checkinBuscado,
+        assertEquals(checkin, checkinBuscado, 
                 "O check-in buscado deve ser igual");
     }
 
     @Test
     void buscarCheckinPorIdComIdNulo(){
         // Act & Assert
-        BadRequestException excecao = assertThrows(BadRequestException.class,
+        BadRequestException excecao = assertThrows(BadRequestException.class, 
                 () -> checkinService.findById(null));
-        assertEquals("Por favor informe um id válido", excecao.getMessage(),
+        assertEquals("Por favor informe um id válido", excecao.getMessage(), 
                 "A mensagem de erro deve ser específica");
     }
 
