@@ -1,12 +1,9 @@
 package com.desafio.hotel.resource;
 
 import com.desafio.hotel.dto.response.ResponseDTO;
-import com.desafio.hotel.entity.checkin.Checkin;
 import com.desafio.hotel.entity.checkout.Checkout;
 import com.desafio.hotel.openapi.CheckoutControllerOpenApi;
-import com.desafio.hotel.services.checkout.CheckoutService;
-import org.apache.coyote.Response;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.desafio.hotel.services.checkout.CheckoutServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,9 +23,9 @@ import java.util.List;
 @RequestMapping(path = "/checkout")
 public class CheckoutController implements CheckoutControllerOpenApi {
 
-    private final CheckoutService checkoutService;
+    private final CheckoutServiceImpl checkoutService;
 
-    public CheckoutController(CheckoutService checkoutService) {
+    public CheckoutController(CheckoutServiceImpl checkoutService) {
         this.checkoutService = checkoutService;
     }
 

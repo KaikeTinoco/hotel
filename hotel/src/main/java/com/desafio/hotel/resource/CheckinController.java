@@ -3,7 +3,7 @@ package com.desafio.hotel.resource;
 import com.desafio.hotel.dto.checkin.CheckinCreateDto;
 import com.desafio.hotel.entity.checkin.Checkin;
 import com.desafio.hotel.openapi.CheckinControllerOpenApi;
-import com.desafio.hotel.services.checkin.CheckinService;
+import com.desafio.hotel.services.checkin.CheckinServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,9 +21,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/checkin")
 public class CheckinController implements CheckinControllerOpenApi {
 
-    private final CheckinService checkinService;
+    private final CheckinServiceImpl checkinService;
 
-    public CheckinController(CheckinService checkinService) {
+    @Autowired
+    public CheckinController(CheckinServiceImpl checkinService) {
         this.checkinService = checkinService;
     }
 
