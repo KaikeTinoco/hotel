@@ -9,6 +9,10 @@ import com.desafio.hotel.exceptions.BadRequestException;
 import com.desafio.hotel.repositories.CheckinRepository;
 import com.desafio.hotel.repositories.CheckoutRepository;
 import com.desafio.hotel.repositories.GuestRepository;
+import com.desafio.hotel.services.checkin.CheckinServiceImpl;
+import com.desafio.hotel.services.checkout.CheckoutServiceImpl;
+import com.desafio.hotel.services.estadia.CalculoEstadiaServiceImpl;
+import com.desafio.hotel.services.guests.GuestServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -39,22 +43,22 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ActiveProfiles("test")
 class CheckoutServiceTest {
     @InjectMocks
-    private CheckoutService checkoutService;
+    private CheckoutServiceImpl checkoutService;
 
     @Mock
     private CheckoutRepository checkoutRepository;
 
     @Mock
-    private CheckinService checkinService;
+    private CheckinServiceImpl checkinService;
 
     @Mock
     private CheckinRepository checkinRepository;
 
     @Mock
-    private CalculoEstadiaService calculoEstadiaService;
+    private CalculoEstadiaServiceImpl calculoEstadiaService;
 
     @Mock
-    private GuestService guestService;
+    private GuestServiceImpl guestService;
 
     @Mock
     private GuestRepository guestRepository;

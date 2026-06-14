@@ -3,6 +3,7 @@ package com.desafio.hotel.services;
 import com.desafio.hotel.dto.guest.GuestDto;
 import com.desafio.hotel.entity.guest.Guest;
 import com.desafio.hotel.repositories.GuestRepository;
+import com.desafio.hotel.services.guests.GuestServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -35,7 +36,7 @@ class GuestServiceTest {
     private GuestRepository guestRepository;
 
     @InjectMocks
-    private GuestService guestService;
+    private GuestServiceImpl guestService;
 
     private Guest hospede;
 

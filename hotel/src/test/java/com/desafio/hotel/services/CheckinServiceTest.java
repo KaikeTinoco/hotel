@@ -6,6 +6,8 @@ import com.desafio.hotel.entity.guest.Guest;
 import com.desafio.hotel.exceptions.BadRequestException;
 import com.desafio.hotel.repositories.CheckinRepository;
 import com.desafio.hotel.repositories.GuestRepository;
+import com.desafio.hotel.services.checkin.CheckinServiceImpl;
+import com.desafio.hotel.services.guests.GuestServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -33,11 +35,11 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 class CheckinServiceTest {
     @InjectMocks
-    private CheckinService checkinService;
+    private CheckinServiceImpl checkinService;
     @Mock
     private CheckinRepository checkinRepository;
     @Mock
-    private GuestService guestService;
+    private GuestServiceImpl guestService;
     @Mock
     private GuestRepository guestRepository;
     private Guest hospede;
