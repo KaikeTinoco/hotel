@@ -1,4 +1,4 @@
-package com.desafio.hotel.services;
+package com.desafio.hotel.services.checkout;
 
 import com.desafio.hotel.dto.response.ResponseDTO;
 import com.desafio.hotel.entity.checkin.Checkin;
@@ -6,6 +6,9 @@ import com.desafio.hotel.entity.checkout.Checkout;
 import com.desafio.hotel.entity.guest.Guest;
 import com.desafio.hotel.exceptions.BadRequestException;
 import com.desafio.hotel.repositories.CheckoutRepository;
+import com.desafio.hotel.services.checkin.CheckinService;
+import com.desafio.hotel.services.estadia.CalculoEstadiaService;
+import com.desafio.hotel.services.guests.GuestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +37,7 @@ import java.util.List;
  * @since 1.0
  */
 @Service
-public class CheckoutService {
+public class CheckoutServiceImpl implements CheckoutService {
 
     private final CheckoutRepository repository;
 
@@ -45,7 +48,7 @@ public class CheckoutService {
     private final GuestService guestService;
 
     @Autowired
-    public CheckoutService(CheckoutRepository repository, CheckinService checkinService, CalculoEstadiaService calculoEstadiaService, GuestService guestService) {
+    public CheckoutServiceImpl(CheckoutRepository repository, CheckinService checkinService, CalculoEstadiaService calculoEstadiaService, GuestService guestService) {
         this.repository = repository;
         this.checkinService = checkinService;
         this.calculoEstadiaService = calculoEstadiaService;
@@ -62,6 +65,7 @@ public class CheckoutService {
      * @return o objeto Checkout criado
      * @throws BadRequestException se o ID for nulo ou o check-in não existir
      */
+    @Override
     public Checkout criarCheckout(Long id){
         if(id == null){
             throw new BadRequestException("id vazio, por favor envie um id válido");
@@ -90,6 +94,7 @@ public class CheckoutService {
      * @return lista de check-outs do check-in
      * @throws BadRequestException se o ID for nulo ou nenhum check-out for encontrado
      */
+    @Override
     public List<Checkout> findByCheckinId(Long id) {
         if (id == null){
             throw new BadRequestException("Id vazio, por favor informe um id válido");
@@ -110,6 +115,7 @@ public class CheckoutService {
      * @return lista de RespostasDTO contendo dados dos hóspedes dentro do hotel
      * @throws BadRequestException se nenhum hóspede for encontrado
      */
+    @Override
     public List<ResponseDTO> buscarTodosHospedesNoHotel() {
         return getResponseDTOS(true);
     }
@@ -120,6 +126,7 @@ public class CheckoutService {
      * @return lista de RespostasDTO contendo dados dos hóspedes fora do hotel
      * @throws BadRequestException se nenhum hóspede for encontrado
      */
+    @Override
     public List<ResponseDTO> buscarTodosHospedesForaHotel() {
         return getResponseDTOS(false);
     }
@@ -170,10 +177,5 @@ public class CheckoutService {
     }
 
 
-
-
-
-
-
-
 }
+

@@ -1,15 +1,14 @@
-package com.desafio.hotel.services;
+package com.desafio.hotel.services.checkin;
 
 import com.desafio.hotel.dto.checkin.CheckinCreateDto;
-import com.desafio.hotel.dto.response.ResponseDTO;
 import com.desafio.hotel.entity.checkin.Checkin;
 import com.desafio.hotel.entity.guest.Guest;
 import com.desafio.hotel.exceptions.BadRequestException;
 import com.desafio.hotel.exceptions.GuestNotFoundException;
 import com.desafio.hotel.repositories.CheckinRepository;
+import com.desafio.hotel.services.guests.GuestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 /**
@@ -30,14 +29,14 @@ import java.util.List;
  * @since 1.0
  */
 @Service
-public class CheckinService {
+public class CheckinServiceImpl implements CheckinService {
 
     private final CheckinRepository repository;
 
     private final GuestService guestService;
 
     @Autowired
-    public CheckinService(CheckinRepository repository, GuestService guestService) {
+    public CheckinServiceImpl(CheckinRepository repository, GuestService guestService) {
         this.repository = repository;
         this.guestService = guestService;
     }
@@ -49,6 +48,7 @@ public class CheckinService {
      * @return o objeto Checkin criado
      * @throws BadRequestException se houver erro durante a criação do check-in
      */
+    @Override
     public Checkin criarCheckin(CheckinCreateDto dto) {
         try {
             Checkin checkin = new Checkin();
@@ -70,6 +70,7 @@ public class CheckinService {
      * @return mensagem confirmando a exclusão do check-in
      * @throws BadRequestException se o ID for nulo ou o check-in não existir
      */
+    @Override
     public String deletarCheckin(Long id) {
         if (id == null){
             throw new BadRequestException("Por favor informe um id válido");
@@ -91,6 +92,7 @@ public class CheckinService {
      * @return lista de check-ins do hóspede
      * @throws BadRequestException se o ID for nulo ou nenhum check-in for encontrado
      */
+    @Override
     public List<Checkin> findByGuestId(Long id)  {
         if (id == null){
             throw new BadRequestException("Por favor informe um id válido");
@@ -107,6 +109,7 @@ public class CheckinService {
      * @throws BadRequestException se o ID for nulo
      * @throws GuestNotFoundException se o check-in não for encontrado
      */
+    @Override
     public Checkin findById(Long id)  {
         if (id == null){
             throw new BadRequestException("Por favor informe um id válido");
@@ -115,5 +118,5 @@ public class CheckinService {
     }
 
 
-
 }
+
