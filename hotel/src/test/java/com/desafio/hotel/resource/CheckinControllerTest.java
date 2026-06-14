@@ -4,7 +4,7 @@ import com.desafio.hotel.dto.checkin.CheckinCreateDto;
 import com.desafio.hotel.dto.guest.GuestDto;
 import com.desafio.hotel.entity.checkin.Checkin;
 import com.desafio.hotel.entity.guest.Guest;
-import com.desafio.hotel.services.CheckinService;
+import com.desafio.hotel.services.checkin.CheckinServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -19,6 +19,16 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Testes para o controlador de check-in.
+ *
+ * <p>Verifica as operações de criação e deleção de check-ins através
+ * do endpoint REST.</p>
+ *
+ * @author Desafio Hotel
+ * @version 1.0
+ * @since 1.0
+ */
 @ActiveProfiles("test")
 class CheckinControllerTest {
 
@@ -26,65 +36,80 @@ class CheckinControllerTest {
     private CheckinController checkinController;
 
     @Mock
-    private CheckinService checkinService;
+    private CheckinServiceImpl checkinService;
 
-    private Guest guest;
+    private Guest hospede;
 
     private Checkin checkin;
 
-    private CheckinCreateDto createDto;
+    private CheckinCreateDto criarDto;
 
     @BeforeEach
-    void init(){
+    void inicializar(){
         MockitoAnnotations.openMocks(this);
-        guest = criarHospede();
-        checkin = criarCheckin(guest);
-        createDto = criarCheckinDto(guest);
+        hospede = criarHospede();
+        checkin = criarCheckin(hospede);
+        criarDto = criarCheckinDto(hospede);
     }
 
     @Test
-    void criarCheckinTest() {
-        Checkin checkinCreated = checkin;
-        CheckinCreateDto checkinDto = createDto;
-        Mockito.when(checkinService.criarCheckin(checkinDto)).thenReturn(checkinCreated);
+    void criarCheckinComSucesso() {
+        // Arrange
+        Checkin checkinCriado = checkin;
+        CheckinCreateDto checkinDto = criarDto;
+        Mockito.when(checkinService.criarCheckin(checkinDto)).thenReturn(checkinCriado);
+
+        // Act
         ResponseEntity response = checkinController.criarCheckin(checkinDto);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode(), 
+                "O status da resposta deve ser OK");
+        assertNotNull(response.getBody(), 
+                "O corpo da resposta não pode ser nulo");
     }
 
     @Test
-    void deletarCheckinTest() {
-        Checkin checkinCreated = checkin;
-        Mockito.when(checkinService.deletarCheckin(checkinCreated.getId()))
+    void deletarCheckinComSucesso() {
+        // Arrange
+        Checkin checkinCriado = checkin;
+        Mockito.when(checkinService.deletarCheckin(checkinCriado.getId()))
                 .thenReturn("Checkin deletado com sucesso!");
-        String message = checkinService.deletarCheckin(checkinCreated.getId());
-        assertEquals(message, "Checkin deletado com sucesso!");
+
+        // Act
+        String mensagem = checkinService.deletarCheckin(checkinCriado.getId());
+
+        // Assert
+        assertEquals("Checkin deletado com sucesso!", mensagem, 
+                "A mensagem de sucesso deve ser retornada");
     }
 
 
+
+    // ...existing code...
 
     private Guest criarHospede(){
-        Guest guest = new Guest();
-        guest.setId(1L);
-        guest.setNome("Gustavo");
-        guest.setDocumento("23583290");
-        guest.setTelefone("111222333444");
-        guest.setDentroHotel(true);
-        return guest;
+        Guest hospede = new Guest();
+        hospede.setId(1L);
+        hospede.setNome("Gustavo");
+        hospede.setDocumento("23583290");
+        hospede.setTelefone("111222333444");
+        hospede.setDentroHotel(true);
+        return hospede;
     }
 
-    private Checkin criarCheckin(Guest guest){
+    private Checkin criarCheckin(Guest hospede){
         Checkin checkin = new Checkin();
         checkin.setId(1L);
-        checkin.setGuest(guest);
+        checkin.setGuest(hospede);
         checkin.setDataEntrada(LocalDateTime.now());
         checkin.setAdicionalVeiculo(true);
         return checkin;
     }
 
-    private CheckinCreateDto criarCheckinDto(Guest guest){
+    private CheckinCreateDto criarCheckinDto(Guest hospede){
         CheckinCreateDto dto = new CheckinCreateDto();
-        dto.setGuestId(guest.getId());
+        dto.setGuestId(hospede.getId());
         dto.setAdicionalVeiculo(true);
         dto.setDataEntrada(LocalDateTime.now());
         return dto;

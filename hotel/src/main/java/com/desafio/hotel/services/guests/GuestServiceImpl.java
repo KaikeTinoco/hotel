@@ -1,4 +1,4 @@
-package com.desafio.hotel.services;
+package com.desafio.hotel.services.guests;
 
 import com.desafio.hotel.dto.guest.GuestDto;
 import com.desafio.hotel.entity.guest.Guest;
@@ -33,12 +33,12 @@ import java.util.List;
  * @since 1.0
  */
 @Service
-public class GuestService {
+public class GuestServiceImpl implements GuestService {
 
     private final GuestRepository repository;
 
     @Autowired
-    public GuestService(GuestRepository repository) {
+    public GuestServiceImpl(GuestRepository repository) {
         this.repository = repository;
     }
 
@@ -52,6 +52,7 @@ public class GuestService {
      * @return o hóspede cadastrado
      * @throws BadRequestException se houver erro ao salvar o hóspede
      */
+    @Override
     public Guest cadastrarHospede(GuestDto dto){
         try {
             Guest guest = new Guest();
@@ -78,6 +79,7 @@ public class GuestService {
      * @param telefone telefone do hóspede (opcional)
      * @return lista de hóspedes que correspondem aos critérios
      */
+    @Override
     public List<Guest> filtroDeBusca(String nome, String documento, String telefone){
         if(validarParametros(nome, documento, telefone)){
             GuestSpecification nomeSpecification = null;
@@ -177,6 +179,7 @@ public class GuestService {
      * @throws BadRequestException se o ID for nulo
      * @throws GuestNotFoundException se o hóspede não for encontrado
      */
+    @Override
     public String deletarGuestById(Long id){
         if (id == null){
             throw new BadRequestException("Id vazio, por favor envie um id válido");
@@ -209,6 +212,7 @@ public class GuestService {
      * @throws BadRequestException se o ID for nulo
      * @throws GuestNotFoundException se o hóspede não for encontrado
      */
+    @Override
     public Guest findById(Long guestId) {
         if(guestId == null){
             throw new BadRequestException("Id vazio, por favor envie um id válido");
@@ -244,6 +248,7 @@ public class GuestService {
      *
      * @return lista com todos os hóspedes
      */
+    @Override
     public List<Guest> buscarTodosHospedes() {
         return repository.findAll();
     }
@@ -255,6 +260,7 @@ public class GuestService {
      * @return lista de hóspedes de acordo com o critério
      * @throws BadRequestException se nenhum hóspede for encontrado
      */
+    @Override
     public List<Guest> buscarHospedeDentroOuForaHotel(boolean dentroHotel){
         String mensagemErro = dentroHotel?"Não há pessoas dentro do hotel!":"Não há pessoas fora do hotel!";
         return repository.findByDentroHotel(dentroHotel)
@@ -264,3 +270,4 @@ public class GuestService {
 
 
 }
+

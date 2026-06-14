@@ -3,6 +3,7 @@ package com.desafio.hotel.services;
 import com.desafio.hotel.dto.guest.GuestDto;
 import com.desafio.hotel.entity.guest.Guest;
 import com.desafio.hotel.repositories.GuestRepository;
+import com.desafio.hotel.services.guests.GuestServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -18,6 +19,16 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Testes para o serviço de gerenciamento de hóspedes.
+ *
+ * <p>Verifica as operações de cadastro, busca, deleção e filtros
+ * de hóspedes no sistema hoteleiro.</p>
+ *
+ * @author Desafio Hotel
+ * @version 1.0
+ * @since 1.0
+ */
 @ActiveProfiles("test")
 class GuestServiceTest {
 
@@ -25,101 +36,152 @@ class GuestServiceTest {
     private GuestRepository guestRepository;
 
     @InjectMocks
-    private GuestService guestService;
+    private GuestServiceImpl guestService;
 
-    private Guest guest;
+    private Guest hospede;
 
     private GuestDto dto;
 
     @BeforeEach
-    void init(){
+    void inicializar(){
         MockitoAnnotations.initMocks(this);
-        guest = criarHospede();
+        hospede = criarHospede();
         dto = criarDto();
     }
 
     @Test
-    void cadastrarHospede() {
-        Mockito.when(this.guestRepository.save(guest)).thenReturn(guest);
-        Guest hospedeSalvo = new Guest();
-        hospedeSalvo = guestService.cadastrarHospede(dto);
+    void cadastrarHospedeComSucesso() {
+        // Arrange
+        Mockito.when(this.guestRepository.save(hospede)).thenReturn(hospede);
 
-        assertEquals("gustavo", hospedeSalvo.getNome());
-        assertEquals("18307944007", hospedeSalvo.getDocumento());
-        assertEquals("111222333444", hospedeSalvo.getTelefone());
-        assertTrue(hospedeSalvo.isDentroHotel());
+        // Act
+        Guest hospedeSalvo = guestService.cadastrarHospede(dto);
+
+        // Assert
+        assertEquals("gustavo", hospedeSalvo.getNome(), 
+                "O nome deve ser 'gustavo'");
+        assertEquals("18307944007", hospedeSalvo.getDocumento(), 
+                "O documento deve ser validado");
+        assertEquals("111222333444", hospedeSalvo.getTelefone(), 
+                "O telefone deve ser preservado");
+        assertTrue(hospedeSalvo.isDentroHotel(), 
+                "O hóspede deve estar dentro do hotel por padrão");
     }
 
     @Test
-    void deletarGuestById() {
-        guest.setId(1L);
-        Mockito.when(this.guestRepository.findById(1L)).thenReturn(Optional.of(guest));
-        String mensagem = guestService.deletarGuestById(guest.getId());
-        assertEquals(mensagem,"Hóspede deletado com sucesso!" );
+    void deletarHospedeComSucesso() {
+        // Arrange
+        hospede.setId(1L);
+        Mockito.when(this.guestRepository.findById(1L)).thenReturn(Optional.of(hospede));
+
+        // Act
+        String mensagem = guestService.deletarGuestById(hospede.getId());
+
+        // Assert
+        assertEquals("Hóspede deletado com sucesso!", mensagem, 
+                "A mensagem de sucesso deve ser retornada");
     }
 
     @Test
-    void findById() {
-        guest.setId(1L);
-        Mockito.when(this.guestRepository.findById(1L)).thenReturn(Optional.of(guest));
-        Guest guestFound = guestService.findById(1L);
-        assertEquals(guestFound.getNome(), "gustavo");
-        assertEquals(guestFound.getDocumento(),"183.079.440-07");
-        assertEquals(guestFound.getTelefone(),"111222333444");
-        assertEquals(guestFound.isDentroHotel(), true);
-        assertNotNull(guestFound.getId());
+    void buscarHospedePorId() {
+        // Arrange
+        hospede.setId(1L);
+        Mockito.when(this.guestRepository.findById(1L)).thenReturn(Optional.of(hospede));
+
+        // Act
+        Guest hospedeBuscado = guestService.findById(1L);
+
+        // Assert
+        assertEquals("gustavo", hospedeBuscado.getNome(),
+                "O nome deve corresponder");
+        assertEquals("183.079.440-07", hospedeBuscado.getDocumento(),
+                "O documento deve corresponder");
+        assertEquals("111222333444", hospedeBuscado.getTelefone(),
+                "O telefone deve corresponder");
+        assertTrue(hospedeBuscado.isDentroHotel(), "O status dentro/fora do hotel deve ser verdadeiro");
+        assertNotNull(hospedeBuscado.getId(), 
+                "O ID não pode ser nulo");
     }
 
     @Test
-    void buscarTodosHospedes() {
-        List<Guest> guests = new ArrayList<>();
-        guests.add(guest);
-        Mockito.when(guestRepository.findAll()).thenReturn(guests);
-        List<Guest> guestsFound = guestService.buscarTodosHospedes();
-        assertEquals(guests.size(), guestsFound.size());
-        assertEquals(guests.get(0).getNome(), guestsFound.get(0).getNome());
-        assertEquals(guests.get(0).getDocumento(), guestsFound.get(0).getDocumento());
-        assertEquals(guests.get(0).getTelefone(), guestsFound.get(0).getTelefone());
-        assertEquals(guests.get(0).isDentroHotel(), guestsFound.get(0).isDentroHotel());
-    }
+    void buscarTodosOsHospedes() {
+        // Arrange
+        List<Guest> hospedes = new ArrayList<>();
+        hospedes.add(hospede);
+        Mockito.when(guestRepository.findAll()).thenReturn(hospedes);
 
+        // Act
+        List<Guest> hospedBuscados = guestService.buscarTodosHospedes();
 
-    @Test
-    void buscarHospedeDentroHotel() {
-        List<Guest> guests = new ArrayList<>();
-        guests.add(guest);
-        Mockito.when(guestRepository.findByDentroHotel(true)).thenReturn(Optional.of(guests));
-        List<Guest> guestsFound = guestService.buscarHospedeDentroOuForaHotel(true);
-        assertEquals(guestsFound.size(), guests.size());
-        assertEquals(guestsFound.get(0).getNome(), guests.get(0).getNome());
-        assertEquals(guestsFound.get(0).getDocumento(), guests.get(0).getDocumento());
-        assertEquals(guestsFound.get(0).getTelefone(), guests.get(0).getTelefone());
-        assertEquals(guestsFound.get(0).isDentroHotel(), guests.get(0).isDentroHotel());
-
+        // Assert
+        assertEquals(hospedes.size(), hospedBuscados.size(), 
+                "O tamanho da lista deve ser igual");
+        assertEquals(hospedes.get(0).getNome(), hospedBuscados.get(0).getNome(), 
+                "O primeiro hóspede deve ter o mesmo nome");
+        assertEquals(hospedes.get(0).getDocumento(), hospedBuscados.get(0).getDocumento(), 
+                "O primeiro hóspede deve ter o mesmo documento");
+        assertEquals(hospedes.get(0).getTelefone(), hospedBuscados.get(0).getTelefone(), 
+                "O primeiro hóspede deve ter o mesmo telefone");
+        assertEquals(hospedes.get(0).isDentroHotel(), hospedBuscados.get(0).isDentroHotel(), 
+                "O primeiro hóspede deve ter o mesmo status");
     }
 
     @Test
-    void buscarHospedeForaHotel() {
-        guest.setDentroHotel(false);
-        List<Guest> guests = new ArrayList<>();
-        guests.add(guest);
-        Mockito.when(guestRepository.findByDentroHotel(false)).thenReturn(Optional.of(guests));
-        List<Guest> guestsFound = guestService.buscarHospedeDentroOuForaHotel(false);
-        assertEquals(guestsFound.size(), guests.size());
-        assertEquals(guestsFound.get(0).getNome(), guests.get(0).getNome());
-        assertEquals(guestsFound.get(0).getDocumento(), guests.get(0).getDocumento());
-        assertEquals(guestsFound.get(0).getTelefone(), guests.get(0).getTelefone());
-        assertEquals(guestsFound.get(0).isDentroHotel(), guests.get(0).isDentroHotel());
+    void buscarHospedeDentroDoHotel() {
+        // Arrange
+        List<Guest> hospedes = new ArrayList<>();
+        hospedes.add(hospede);
+        Mockito.when(guestRepository.findByDentroHotel(true)).thenReturn(Optional.of(hospedes));
 
+        // Act
+        List<Guest> hospedBuscados = guestService.buscarHospedeDentroOuForaHotel(true);
+
+        // Assert
+        assertEquals(hospedBuscados.size(), hospedes.size(), 
+                "O tamanho deve ser igual");
+        assertEquals(hospedBuscados.get(0).getNome(), hospedes.get(0).getNome(), 
+                "O nome deve corresponder");
+        assertEquals(hospedBuscados.get(0).getDocumento(), hospedes.get(0).getDocumento(), 
+                "O documento deve corresponder");
+        assertEquals(hospedBuscados.get(0).getTelefone(), hospedes.get(0).getTelefone(), 
+                "O telefone deve corresponder");
+        assertEquals(hospedBuscados.get(0).isDentroHotel(), hospedes.get(0).isDentroHotel(), 
+                "O status deve corresponder");
     }
+
+    @Test
+    void buscarHospedeForaDoHotel() {
+        // Arrange
+        hospede.setDentroHotel(false);
+        List<Guest> hospedes = new ArrayList<>();
+        hospedes.add(hospede);
+        Mockito.when(guestRepository.findByDentroHotel(false)).thenReturn(Optional.of(hospedes));
+
+        // Act
+        List<Guest> hospedBuscados = guestService.buscarHospedeDentroOuForaHotel(false);
+
+        // Assert
+        assertEquals(hospedBuscados.size(), hospedes.size(), 
+                "O tamanho deve ser igual");
+        assertEquals(hospedBuscados.get(0).getNome(), hospedes.get(0).getNome(), 
+                "O nome deve corresponder");
+        assertEquals(hospedBuscados.get(0).getDocumento(), hospedes.get(0).getDocumento(), 
+                "O documento deve corresponder");
+        assertEquals(hospedBuscados.get(0).getTelefone(), hospedes.get(0).getTelefone(), 
+                "O telefone deve corresponder");
+        assertEquals(hospedBuscados.get(0).isDentroHotel(), hospedes.get(0).isDentroHotel(), 
+                "O status deve ser falso (fora do hotel)");
+    }
+
+    // ...existing code...
 
     private Guest criarHospede(){
-        Guest guest = new Guest();
-        guest.setNome("gustavo");
-        guest.setDocumento("183.079.440-07");
-        guest.setTelefone("111222333444");
-        guest.setDentroHotel(true);
-        return guest;
+        Guest hospede = new Guest();
+        hospede.setNome("gustavo");
+        hospede.setDocumento("183.079.440-07");
+        hospede.setTelefone("111222333444");
+        hospede.setDentroHotel(true);
+        return hospede;
     }
 
     private GuestDto criarDto(){

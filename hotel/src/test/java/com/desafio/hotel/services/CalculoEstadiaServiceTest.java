@@ -4,6 +4,7 @@ import com.desafio.hotel.entity.checkin.Checkin;
 import com.desafio.hotel.entity.checkout.Checkout;
 import com.desafio.hotel.entity.guest.Guest;
 import com.desafio.hotel.exceptions.BadRequestException;
+import com.desafio.hotel.services.estadia.CalculoEstadiaServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -21,11 +22,11 @@ class CalculoEstadiaServiceTest {
        dia util sem carro = 120, com carro = 140
        fim de semana sem carro = 150, com carro = 170
     */
-    private CalculoEstadiaService calculoEstadiaService;
+    private CalculoEstadiaServiceImpl calculoEstadiaService;
 
     @BeforeEach
     void init(){
-        calculoEstadiaService = new CalculoEstadiaService();
+        calculoEstadiaService = new CalculoEstadiaServiceImpl();
     }
 
     @Test

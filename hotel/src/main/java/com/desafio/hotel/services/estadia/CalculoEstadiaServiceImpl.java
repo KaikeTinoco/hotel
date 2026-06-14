@@ -1,4 +1,4 @@
-package com.desafio.hotel.services;
+package com.desafio.hotel.services.estadia;
 
 import com.desafio.hotel.entity.checkout.Checkout;
 import com.desafio.hotel.exceptions.BadRequestException;
@@ -30,7 +30,7 @@ import java.util.*;
  * @since 1.0
  */
 @Service
-public class CalculoEstadiaService {
+public class CalculoEstadiaServiceImpl implements CalculoEstadiaService {
 
     /** Valor da diária em dia útil sem veículo */
     private static final BigDecimal VALOR_UTIL_SEM_CARRO = new BigDecimal("120");
@@ -60,6 +60,7 @@ public class CalculoEstadiaService {
      * @return o valor total da estadia em BigDecimal
      * @throws BadRequestException se a data de saída for anterior à data de entrada
      */
+    @Override
     public BigDecimal calcularValorEstadia(LocalDateTime dataEntrada,
                                            LocalDateTime dataSaida,
                                            boolean adicionalVeiculo) {
@@ -137,6 +138,7 @@ public class CalculoEstadiaService {
      * @param checkoutList lista de checkouts do cliente
      * @return o valor total acumulado das estadias do cliente
      */
+    @Override
     public BigDecimal calcularTotalEstadias(Long clienteId, List<Checkout> checkoutList) {
         checkoutsProcessadosPorCliente.putIfAbsent(clienteId, new HashSet<>());
         Set<Long> checkoutsProcessados = checkoutsProcessadosPorCliente.get(clienteId);
@@ -154,3 +156,4 @@ public class CalculoEstadiaService {
         return totalAtual;
     }
 }
+
