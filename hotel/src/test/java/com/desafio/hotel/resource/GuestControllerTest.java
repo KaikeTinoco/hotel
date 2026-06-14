@@ -4,7 +4,7 @@ import com.desafio.hotel.dto.guest.GuestDto;
 import com.desafio.hotel.entity.checkin.Checkin;
 import com.desafio.hotel.entity.checkout.Checkout;
 import com.desafio.hotel.entity.guest.Guest;
-import com.desafio.hotel.services.GuestService;
+import com.desafio.hotel.services.guests.GuestServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -19,7 +19,8 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Testes para o controlador de hóspedes.
@@ -37,7 +38,7 @@ class GuestControllerTest {
     private GuestController guestController;
 
     @Mock
-    private GuestService guestService;
+    private GuestServiceImpl guestService;
 
     private Guest hospede;
 

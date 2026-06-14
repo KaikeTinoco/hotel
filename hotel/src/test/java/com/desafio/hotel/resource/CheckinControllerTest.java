@@ -4,7 +4,7 @@ import com.desafio.hotel.dto.checkin.CheckinCreateDto;
 import com.desafio.hotel.dto.guest.GuestDto;
 import com.desafio.hotel.entity.checkin.Checkin;
 import com.desafio.hotel.entity.guest.Guest;
-import com.desafio.hotel.services.CheckinService;
+import com.desafio.hotel.services.checkin.CheckinServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -36,7 +36,7 @@ class CheckinControllerTest {
     private CheckinController checkinController;
 
     @Mock
-    private CheckinService checkinService;
+    private CheckinServiceImpl checkinService;
 
     private Guest hospede;
 
