@@ -5,16 +5,23 @@ import com.desafio.hotel.entity.checkout.Checkout;
 import com.desafio.hotel.entity.guest.Guest;
 import com.desafio.hotel.exceptions.BadRequestException;
 import com.desafio.hotel.services.estadia.CalculoEstadiaServiceImpl;
+import com.desafio.hotel.services.checkin.CheckinServiceImpl;
+import com.desafio.hotel.services.checkout.CheckoutServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+
 @ActiveProfiles("test")
 class CalculoEstadiaServiceTest {
 
@@ -22,11 +29,18 @@ class CalculoEstadiaServiceTest {
        dia util sem carro = 120, com carro = 140
        fim de semana sem carro = 150, com carro = 170
     */
+    @InjectMocks
     private CalculoEstadiaServiceImpl calculoEstadiaService;
+
+    @Mock
+    private CheckoutServiceImpl checkoutService;
+
+    @Mock
+    private CheckinServiceImpl checkinService;
 
     @BeforeEach
     void init(){
-        calculoEstadiaService = new CalculoEstadiaServiceImpl();
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
@@ -83,7 +97,9 @@ class CalculoEstadiaServiceTest {
 
     @Test
     void retornaZeroSeHospedeNaoTiverCheckoutsAnteriores(){
-        BigDecimal total = calculoEstadiaService.calcularTotalEstadias(1L, List.of());
+        when(checkoutService.listarTodosCheckoutsDoCliente(1L)).thenReturn(Arrays.asList());
+
+        BigDecimal total = calculoEstadiaService.calcularTotalEstadias(1L);
 
         assertEquals(BigDecimal.ZERO, total);
     }
@@ -98,9 +114,10 @@ class CalculoEstadiaServiceTest {
         checkoutDois.setValorTotal(BigDecimal.valueOf(200));
         Checkout checkoutTres = checkoutDois;
 
+        when(checkoutService.listarTodosCheckoutsDoCliente(1L))
+                .thenReturn(Arrays.asList(checkout, checkoutDois, checkoutTres));
 
-        BigDecimal total = calculoEstadiaService.calcularTotalEstadias(1L, List.of(checkout,
-                checkoutDois, checkoutTres));
+        BigDecimal total = calculoEstadiaService.calcularTotalEstadias(1L);
 
         assertEquals(BigDecimal.valueOf(300), total);
     }

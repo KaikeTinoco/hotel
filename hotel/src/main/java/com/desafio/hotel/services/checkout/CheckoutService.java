@@ -12,5 +12,6 @@ public interface CheckoutService {
     List<Checkout> findByCheckinId(Long id);
     List<ResponseDTO> buscarTodosHospedesNoHotel();
     List<ResponseDTO> buscarTodosHospedesForaHotel();
+    List<Checkout> listarTodosCheckoutsDoCliente(Long clienteId);
 }
 

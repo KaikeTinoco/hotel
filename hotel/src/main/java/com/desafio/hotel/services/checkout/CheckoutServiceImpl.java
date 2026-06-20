@@ -76,8 +76,7 @@ public class CheckoutServiceImpl implements CheckoutService {
             Checkout checkout = new Checkout();
             checkout.setCheckin(checkin);
             checkout.setDataSaida(LocalDateTime.now());
-            BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(checkin.getDataEntrada(),
-                    LocalDateTime.now(), checkin.isAdicionalVeiculo());
+            BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(id);
             checkout.setValorTotal(valorTotal);
             guest.setDentroHotel(false);
             repository.save(checkout);
@@ -131,6 +130,11 @@ public class CheckoutServiceImpl implements CheckoutService {
         return getResponseDTOS(false);
     }
 
+    @Override
+    public List<Checkout> listarTodosCheckoutsDoCliente(Long clientId) {
+        return repository.findByCheckinGuestId(clientId);
+    }
+
     /**
      * Método auxiliar para construir a resposta de hóspedes.
      *
@@ -160,7 +164,7 @@ public class CheckoutServiceImpl implements CheckoutService {
                             .build();
                     response.add(responseDTO);
                 }else{
-                    valorGastoTotal = calculoEstadiaService.calcularTotalEstadias(guest.getId(),todosCheckouts);
+                    valorGastoTotal = calculoEstadiaService.calcularTotalEstadias(guest.getId());
                     valorGastoAtual = todosCheckouts.get(todosCheckouts.size() - 1).getValorTotal();
                     ResponseDTO responseDTO = ResponseDTO.builder()
                             .guest(guest)
