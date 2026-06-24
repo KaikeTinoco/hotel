@@ -10,6 +10,6 @@ import java.util.List;
  */
 public interface CalculoEstadiaService {
     BigDecimal calcularValorEstadia(Long checkinId);
-    BigDecimal calcularTotalEstadias(Long clienteId);
+    BigDecimal calcularTotalEstadias(Long clienteId, List<Checkout> checkouts);
 }
 

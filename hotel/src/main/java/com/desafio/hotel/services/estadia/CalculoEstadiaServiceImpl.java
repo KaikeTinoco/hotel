@@ -110,7 +110,7 @@ public class CalculoEstadiaServiceImpl implements CalculoEstadiaService {
         LocalDateTime dataEntrada = checkin.getDataEntrada();
         LocalDateTime dataSaida = LocalDateTime.now();
         boolean adicionalVeiculo = checkin.isAdicionalVeiculo();
-        long diasTotais = ChronoUnit.DAYS.between(dataEntrada.toLocalDate(), dataSaida.toLocalDate()) + 1;
+        long diasTotais = ChronoUnit.DAYS.between(dataEntrada.toLocalDate(), dataSaida.toLocalDate());
         long finaisDeSemana = contarFinaisDeSemana(dataEntrada, dataSaida);
         long diasUteis = diasTotais - finaisDeSemana;
         boolean diariaAdicional = checarHoraSaida(dataSaida);
@@ -126,17 +126,16 @@ public class CalculoEstadiaServiceImpl implements CalculoEstadiaService {
              valorUtil = BigDecimal.valueOf(120);
              valorFimDeSemana = BigDecimal.valueOf(150);
         }
-        total.add(BigDecimal.valueOf(diasUteis).multiply(valorUtil));
-        total.add(BigDecimal.valueOf(finaisDeSemana).multiply(valorFimDeSemana));
+        total = total.add(BigDecimal.valueOf(diasUteis).multiply(valorUtil));
+        total = total.add(BigDecimal.valueOf(finaisDeSemana).multiply(valorFimDeSemana));
         if (diariaAdicional) {
-            total.add(BigDecimal.valueOf(100));
+            total = total.add(BigDecimal.valueOf(100));
         }
         return total;
     }
 
     @Override
-    public BigDecimal calcularTotalEstadias(Long clienteId) {
-        List<Checkout> checkouts = checkoutService.listarTodosCheckoutsDoCliente(clienteId);
+    public BigDecimal calcularTotalEstadias(Long clienteId, List<Checkout> checkouts) {
         return checkouts.stream()
                 .map(Checkout::getValorTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);

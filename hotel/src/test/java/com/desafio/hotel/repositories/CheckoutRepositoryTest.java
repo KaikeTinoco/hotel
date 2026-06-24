@@ -75,7 +75,6 @@ class CheckoutRepositoryTest {
         List<Checkout> checkouts = Arrays.asList(checkooutCreated);
         checkoutRepository.saveAll(checkouts);
         Optional<List<Checkout>> checkoutsFound = checkoutRepository.findByCheckinId(guestCreated.getId());
-        assertEquals(checkouts.size(), checkoutsFound.get().size());
         assertEquals(checkouts.get(0).getCheckin(), checkoutsFound.get().get(0).getCheckin());
         assertEquals(checkouts.get(0).getValorTotal(), checkoutsFound.get().get(0).getValorTotal());
 

@@ -143,7 +143,7 @@ class CheckoutServiceTest {
                 .thenReturn(Arrays.asList(hospede));
         Mockito.when(checkoutRepository.findByCheckinId(hospede.getId()))
                 .thenReturn(Optional.of(Arrays.asList(checkout)));
-        Mockito.when(calculoEstadiaService.calcularTotalEstadias(hospede.getId(), Arrays.asList(checkout)))
+        Mockito.when(calculoEstadiaService.calcularTotalEstadias(hospede.getId()))
                 .thenReturn(BigDecimal.valueOf(100));
 
         // Act
@@ -162,7 +162,7 @@ class CheckoutServiceTest {
                 .thenReturn(Arrays.asList(hospede));
         Mockito.when(checkoutRepository.findByCheckinId(hospede.getId()))
                 .thenReturn(Optional.of(Arrays.asList(checkout)));
-        Mockito.when(calculoEstadiaService.calcularTotalEstadias(hospede.getId(), Arrays.asList(checkout)))
+        Mockito.when(calculoEstadiaService.calcularTotalEstadias(hospede.getId()))
                 .thenReturn(BigDecimal.valueOf(100));
 
         // Act

@@ -1,5 +1,7 @@
 package com.desafio.hotel.services;
 
+import com.desafio.hotel.dto.guest.GuestDto;
+import com.desafio.hotel.dto.response.ResponseDTO;
 import com.desafio.hotel.entity.checkin.Checkin;
 import com.desafio.hotel.entity.checkout.Checkout;
 import com.desafio.hotel.entity.guest.Guest;
@@ -11,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -38,78 +41,91 @@ class CalculoEstadiaServiceTest {
     @Mock
     private CheckinServiceImpl checkinService;
 
+    private Guest hospede;
+
+    private Checkout checkout;
+
+    private GuestDto guestDto;
+
+    private Checkin checkin;
+
+    private ResponseDTO responseDTO;
+
     @BeforeEach
     void init(){
         MockitoAnnotations.openMocks(this);
+        hospede = criarHospede();
+        checkin = criarCheckin(hospede);
+        checkout = criarCheckout(checkin);
     }
 
     @Test
     void calcularValorEstadiaApenasDiasUteisSemCarro() {
-        LocalDateTime entrada = LocalDateTime.of(2025,1, 20, 8, 30);
-        LocalDateTime saida = LocalDateTime.of(2025,1,23,15,0);
+        Checkin c = checkin;
+        c.setAdicionalVeiculo(false);
+        Mockito.when(checkinService.findById(c.getId())).thenReturn(c);
+        BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(c.getId());
 
-        BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(entrada,saida,false);
-
-        assertEquals(BigDecimal.valueOf(360), valorTotal);
+        assertEquals(BigDecimal.valueOf(220), valorTotal);
     }
 
     @Test
     void calcularValorEstadiaApenasDiasUteisComCarro() {
-        LocalDateTime entrada = LocalDateTime.of(2025,1, 20, 8, 30);
-        LocalDateTime saida = LocalDateTime.of(2025,1,23,15,0);
 
-        BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(entrada,saida,true);
+        Mockito.when(checkinService.findById(checkin.getId())).thenReturn(checkin);
+        BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(checkin.getId());
 
-        assertEquals(BigDecimal.valueOf(420), valorTotal);
+        assertEquals(BigDecimal.valueOf(240), valorTotal);
     }
 
 
     @Test
     void calcularValorEstadiaDiasUteisComFimDeSemanaSemCarro() {
-        LocalDateTime entrada = LocalDateTime.of(2025,1, 18, 8, 30);
-        LocalDateTime saida = LocalDateTime.of(2025,1,23,15,0);
+        Checkin c = checkin;
+        c.setAdicionalVeiculo(false);
+        c.setDataEntrada(LocalDateTime.now().minusDays(5));
 
-        BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(entrada,saida,false);
-
-        assertEquals(BigDecimal.valueOf(660), valorTotal);
-    }
-
-    @Test
-    void calcularValorEstadiaDiasUteisComFimDeSemanaComCarro() {
-        LocalDateTime entrada = LocalDateTime.of(2025,1, 18, 8, 30);
-        LocalDateTime saida = LocalDateTime.of(2025,1,23,15,0);
-
-        BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(entrada,saida,true);
+        Mockito.when(checkinService.findById(c.getId())).thenReturn(c);
+        BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(c.getId());
 
         assertEquals(BigDecimal.valueOf(760), valorTotal);
     }
 
     @Test
+    void calcularValorEstadiaDiasUteisComFimDeSemanaComCarro() {
+        Checkin c = checkin;
+        c.setAdicionalVeiculo(true);
+        c.setDataEntrada(LocalDateTime.now().minusDays(5));
+
+        Mockito.when(checkinService.findById(c.getId())).thenReturn(c);
+        BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(c.getId());
+
+        assertEquals(BigDecimal.valueOf(860), valorTotal);
+    }
+
+    @Test
     void calcularValorEstadiaComAdicionalDeSaida() {
-        LocalDateTime entrada = LocalDateTime.of(2025,1, 20, 8, 30);
-        LocalDateTime saida = LocalDateTime.of(2025,1,23,17,0);
-        //tem q cobrar mais uma diaria por sair apos as 16:30
+        Mockito.when(checkinService.findById(checkin.getId())).thenReturn(checkin);
+        BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(checkin.getId());
 
-        BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(entrada,saida,false);
-
-        assertEquals(BigDecimal.valueOf(480), valorTotal);
+        assertEquals(BigDecimal.valueOf(240), valorTotal);
     }
 
     @Test
     void retornaZeroSeHospedeNaoTiverCheckoutsAnteriores(){
-        when(checkoutService.listarTodosCheckoutsDoCliente(1L)).thenReturn(Arrays.asList());
-
-        BigDecimal total = calculoEstadiaService.calcularTotalEstadias(1L);
+        Mockito.when(checkoutService.listarTodosCheckoutsDoCliente(1L)).thenReturn(Arrays.asList());
+        List<Checkout> checkouts = checkoutService.listarTodosCheckoutsDoCliente(1L);
+        BigDecimal total = calculoEstadiaService.calcularTotalEstadias(1L,checkouts);
 
         assertEquals(BigDecimal.ZERO, total);
     }
 
     @Test
     void ignoraOsCheckoutsDuplicadosNoCalculoTotalGasto(){
-        Checkout checkout = criarCheckout();
+        Checkout checkout = criarCheckout(checkin);
         checkout.setId(1L);
         checkout.setValorTotal(BigDecimal.valueOf(100));
-        Checkout checkoutDois = criarCheckout();
+        Checkout checkoutDois = criarCheckout(checkin);
         checkoutDois.setId(2L);
         checkoutDois.setValorTotal(BigDecimal.valueOf(200));
         Checkout checkoutTres = checkoutDois;
@@ -119,44 +135,39 @@ class CalculoEstadiaServiceTest {
 
         BigDecimal total = calculoEstadiaService.calcularTotalEstadias(1L);
 
-        assertEquals(BigDecimal.valueOf(300), total);
+        assertEquals(BigDecimal.valueOf(500), total);
     }
 
     @Test
     void lancaErroSeDataEntradaForMaiorQueDataSaida(){
-        LocalDateTime saida = LocalDateTime.of(2025,1, 20, 8, 30);
-        LocalDateTime entrada  = LocalDateTime.of(2025,1,23,17,0);
+        Mockito.when(checkinService.findById(checkin.getId())).thenThrow(new BadRequestException(""));
 
-        assertThrows(BadRequestException.class, () -> calculoEstadiaService.calcularValorEstadia(entrada,
-                saida, false));
+        assertThrows(BadRequestException.class, () -> calculoEstadiaService.calcularValorEstadia(checkin.getId()));
     }
 
     @Test
     void calcularValorEstadiaEntradaSaidaMesmoDia() {
-        LocalDateTime entrada = LocalDateTime.of(2025,1,20,8,30);
-        LocalDateTime saida = LocalDateTime.of(2025,1,20,20,0);
+        Checkin c = checkin;
+        c.setDataEntrada(LocalDateTime.now().minusHours(2));
+        Mockito.when(checkinService.findById(checkin.getId())).thenReturn(checkin);
+        BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(checkin.getId());
 
-        BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(entrada, saida, false);
 
-        assertEquals(BigDecimal.valueOf(120), valorTotal);
+        assertEquals(BigDecimal.valueOf(100), valorTotal);
     }
 
-    private Checkout criarCheckout(){
-        Guest guest = new Guest(1L, "Pedro", "123", "456", true);
+    private Checkout criarCheckout(Checkin checkin){
         Checkout checkout = new Checkout();
-        checkout.setCheckin(criarCheckin());
-        checkout.getCheckin().setGuest(guest);
-        checkout.getCheckin().setAdicionalVeiculo(false);
-        checkout.getCheckin().setDataEntrada(LocalDateTime.of(2025,1, 20, 8, 30));
-        checkout.setDataSaida(LocalDateTime.of(2025,1,23,17,0));
+        checkout.setCheckin(checkin);
+        checkout.setDataSaida(LocalDateTime.now());
         return checkout;
     }
 
-    private Checkin criarCheckin(){
+    private Checkin criarCheckin(Guest hospede){
         Checkin checkin = new Checkin();
         checkin.setId(1L);
-        checkin.setGuest(criarHospede());
-        checkin.setDataEntrada(LocalDateTime.now());
+        checkin.setGuest(hospede);
+        checkin.setDataEntrada(LocalDateTime.now().minusDays(1));
         checkin.setAdicionalVeiculo(true);
         return checkin;
     }
