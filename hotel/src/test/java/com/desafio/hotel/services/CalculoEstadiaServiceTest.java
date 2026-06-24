@@ -6,6 +6,7 @@ import com.desafio.hotel.entity.checkin.Checkin;
 import com.desafio.hotel.entity.checkout.Checkout;
 import com.desafio.hotel.entity.guest.Guest;
 import com.desafio.hotel.exceptions.BadRequestException;
+import com.desafio.hotel.repositories.CheckoutRepository;
 import com.desafio.hotel.services.estadia.CalculoEstadiaServiceImpl;
 import com.desafio.hotel.services.checkin.CheckinServiceImpl;
 import com.desafio.hotel.services.checkout.CheckoutServiceImpl;
@@ -37,6 +38,9 @@ class CalculoEstadiaServiceTest {
 
     @Mock
     private CheckoutServiceImpl checkoutService;
+
+    @Mock
+    private CheckoutRepository checkoutRepository;
 
     @Mock
     private CheckinServiceImpl checkinService;
@@ -130,10 +134,11 @@ class CalculoEstadiaServiceTest {
         checkoutDois.setValorTotal(BigDecimal.valueOf(200));
         Checkout checkoutTres = checkoutDois;
 
+        Mockito.when(checkoutRepository.findByCheckinGuestId(1L)).thenReturn(Arrays.asList(checkout, checkoutDois, checkoutTres));
         when(checkoutService.listarTodosCheckoutsDoCliente(1L))
                 .thenReturn(Arrays.asList(checkout, checkoutDois, checkoutTres));
-
-        BigDecimal total = calculoEstadiaService.calcularTotalEstadias(1L);
+        List<Checkout> checkouts = checkoutService.findByCheckinId(1L);
+        BigDecimal total = calculoEstadiaService.calcularTotalEstadias(1L, checkouts);
 
         assertEquals(BigDecimal.valueOf(500), total);
     }

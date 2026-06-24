@@ -164,7 +164,7 @@ public class CheckoutServiceImpl implements CheckoutService {
                             .build();
                     response.add(responseDTO);
                 }else{
-                    valorGastoTotal = calculoEstadiaService.calcularTotalEstadias(guest.getId(),);
+                    valorGastoTotal = calculoEstadiaService.calcularTotalEstadias(guest.getId(), listarTodosCheckoutsDoCliente(guest.getId()));
                     valorGastoAtual = todosCheckouts.get(todosCheckouts.size() - 1).getValorTotal();
                     ResponseDTO responseDTO = ResponseDTO.builder()
                             .guest(guest)
