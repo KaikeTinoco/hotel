@@ -6,6 +6,7 @@ import com.desafio.hotel.entity.checkin.Checkin;
 import com.desafio.hotel.entity.checkout.Checkout;
 import com.desafio.hotel.entity.guest.Guest;
 import com.desafio.hotel.exceptions.BadRequestException;
+import com.desafio.hotel.repositories.CheckinRepository;
 import com.desafio.hotel.services.estadia.CalculoEstadiaServiceImpl;
 import com.desafio.hotel.services.checkin.CheckinServiceImpl;
 import com.desafio.hotel.services.checkout.CheckoutServiceImpl;
@@ -21,6 +22,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -40,6 +42,9 @@ class CalculoEstadiaServiceTest {
 
     @Mock
     private CheckinServiceImpl checkinService;
+
+    @Mock
+    private CheckinRepository checkinRepository;
 
     private Guest hospede;
 
@@ -66,7 +71,7 @@ class CalculoEstadiaServiceTest {
         Mockito.when(checkinService.findById(c.getId())).thenReturn(c);
         BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(c.getId());
 
-        assertEquals(BigDecimal.valueOf(220), valorTotal);
+        assertEquals(BigDecimal.valueOf(120), valorTotal);
     }
 
     @Test
@@ -75,7 +80,7 @@ class CalculoEstadiaServiceTest {
         Mockito.when(checkinService.findById(checkin.getId())).thenReturn(checkin);
         BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(checkin.getId());
 
-        assertEquals(BigDecimal.valueOf(240), valorTotal);
+        assertEquals(BigDecimal.valueOf(140), valorTotal);
     }
 
 
@@ -88,7 +93,7 @@ class CalculoEstadiaServiceTest {
         Mockito.when(checkinService.findById(c.getId())).thenReturn(c);
         BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(c.getId());
 
-        assertEquals(BigDecimal.valueOf(760), valorTotal);
+        assertEquals(BigDecimal.valueOf(660), valorTotal);
     }
 
     @Test
@@ -100,7 +105,7 @@ class CalculoEstadiaServiceTest {
         Mockito.when(checkinService.findById(c.getId())).thenReturn(c);
         BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(c.getId());
 
-        assertEquals(BigDecimal.valueOf(860), valorTotal);
+        assertEquals(BigDecimal.valueOf(760), valorTotal);
     }
 
     @Test
@@ -108,7 +113,7 @@ class CalculoEstadiaServiceTest {
         Mockito.when(checkinService.findById(checkin.getId())).thenReturn(checkin);
         BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(checkin.getId());
 
-        assertEquals(BigDecimal.valueOf(240), valorTotal);
+        assertEquals(BigDecimal.valueOf(140), valorTotal);
     }
 
     @Test
@@ -129,11 +134,11 @@ class CalculoEstadiaServiceTest {
         checkoutDois.setId(2L);
         checkoutDois.setValorTotal(BigDecimal.valueOf(200));
         Checkout checkoutTres = checkoutDois;
-
+        List<Checkout> checkouts = Arrays.asList(checkout, checkoutDois, checkoutTres);
         when(checkoutService.listarTodosCheckoutsDoCliente(1L))
                 .thenReturn(Arrays.asList(checkout, checkoutDois, checkoutTres));
 
-        BigDecimal total = calculoEstadiaService.calcularTotalEstadias(1L);
+        BigDecimal total = calculoEstadiaService.calcularTotalEstadias(1L, checkouts);
 
         assertEquals(BigDecimal.valueOf(500), total);
     }
@@ -149,11 +154,12 @@ class CalculoEstadiaServiceTest {
     void calcularValorEstadiaEntradaSaidaMesmoDia() {
         Checkin c = checkin;
         c.setDataEntrada(LocalDateTime.now().minusHours(2));
-        Mockito.when(checkinService.findById(checkin.getId())).thenReturn(checkin);
-        BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(checkin.getId());
+        Mockito.when(checkinRepository.findById(c.getId())).thenReturn(Optional.of(c));
+        Mockito.when(checkinService.findById(c.getId())).thenReturn(c);
+        BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(c.getId());
 
 
-        assertEquals(BigDecimal.valueOf(100), valorTotal);
+        assertEquals(BigDecimal.valueOf(0), valorTotal);
     }
 
     private Checkout criarCheckout(Checkin checkin){
