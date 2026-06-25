@@ -1,7 +1,12 @@
 package com.desafio.hotel.services.estadia;
 
+import com.desafio.hotel.entity.checkin.Checkin;
 import com.desafio.hotel.entity.checkout.Checkout;
+import com.desafio.hotel.entity.guest.Guest;
 import com.desafio.hotel.exceptions.BadRequestException;
+import com.desafio.hotel.services.checkin.CheckinServiceImpl;
+import com.desafio.hotel.services.checkout.CheckoutServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -32,17 +37,13 @@ import java.util.*;
 @Service
 public class CalculoEstadiaServiceImpl implements CalculoEstadiaService {
 
-    /** Valor da diária em dia útil sem veículo */
-    private static final BigDecimal VALOR_UTIL_SEM_CARRO = new BigDecimal("120");
 
-    /** Valor da diária em dia útil com veículo */
-    private static final BigDecimal VALOR_UTIL_COM_CARRO = new BigDecimal("140");
+    private final CheckinServiceImpl checkinService;
+    @Autowired
+    public CalculoEstadiaServiceImpl(CheckinServiceImpl checkinService) {
+        this.checkinService = checkinService;
+    }
 
-    /** Valor da diária em final de semana sem veículo */
-    private static final BigDecimal VALOR_FINAL_SEMANA_SEM_CARRO = new BigDecimal("150");
-
-    /** Valor da diária em final de semana com veículo */
-    private static final BigDecimal VALOR_FINAL_SEMANA_COM_CARRO = new BigDecimal("170");
 
     /**
      * Calcula o valor total da estadia de um hóspede.
@@ -60,35 +61,6 @@ public class CalculoEstadiaServiceImpl implements CalculoEstadiaService {
      * @return o valor total da estadia em BigDecimal
      * @throws BadRequestException se a data de saída for anterior à data de entrada
      */
-    @Override
-    public BigDecimal calcularValorEstadia(LocalDateTime dataEntrada,
-                                           LocalDateTime dataSaida,
-                                           boolean adicionalVeiculo) {
-        if (dataSaida.isBefore(dataEntrada)){
-            throw new BadRequestException("A data de entrada não pode ser depois da data de saída!");
-        }
-
-        long totalDias = ChronoUnit.DAYS.between(dataEntrada.toLocalDate(), dataSaida.toLocalDate());
-        long finaisDeSemana = contarFinaisDeSemana(dataEntrada, dataSaida);
-        long diasUteis = totalDias - finaisDeSemana;
-
-        BigDecimal valorDiaUtil = adicionalVeiculo ? VALOR_UTIL_COM_CARRO : VALOR_UTIL_SEM_CARRO;
-        BigDecimal valorFinalDeSemana = adicionalVeiculo ? VALOR_FINAL_SEMANA_COM_CARRO : VALOR_FINAL_SEMANA_SEM_CARRO;
-
-        BigDecimal valorTotal = valorDiaUtil.multiply(BigDecimal.valueOf(diasUteis))
-                .add(valorFinalDeSemana.multiply(BigDecimal.valueOf(finaisDeSemana)));
-
-
-        if (checarHoraSaida(dataSaida)) {
-            if (dataSaida.getDayOfWeek() == DayOfWeek.SATURDAY || dataSaida.getDayOfWeek() == DayOfWeek.SUNDAY) {
-                valorTotal = valorTotal.add(valorFinalDeSemana);
-            } else {
-                valorTotal = valorTotal.add(valorDiaUtil);
-            }
-        }
-
-        return valorTotal;
-    }
 
     /**
      * Conta o número de finais de semana entre duas datas.
@@ -117,43 +89,58 @@ public class CalculoEstadiaServiceImpl implements CalculoEstadiaService {
      * @return true se a hora é posterior às 16h30, false caso contrário
      */
     private boolean checarHoraSaida(LocalDateTime dataSaida) {
-        if(dataSaida.getHour() > 16){
-            return true;
-        } else return dataSaida.getHour() == 16 && dataSaida.getMinute() == 30;
+        return dataSaida.isAfter(dataSaida.toLocalDate().atTime(16, 30));
     }
 
-    /** Mapa que armazena o total de despesas por cliente */
-    private final Map<Long, BigDecimal> totalPorCliente = new HashMap<>();
-
-    /** Mapa que rastreia quais checkouts já foram processados para cada cliente */
-    private final Map<Long, Set<Long>> checkoutsProcessadosPorCliente = new HashMap<>();
 
     /**
-     * Calcula o total de despesas de um cliente ao longo de múltiplas estadias.
+     * Calcula o total das estadias de um cliente.
      *
-     * <p>Este método evita contar a mesma estadia duas vezes, rastreando os IDs
-     * dos checkouts já processados para cada cliente.</p>
+     * <p>Esta função soma o valor total de todas as estadias realizadas por um determinado cliente,
+     * utilizando a lista de checkouts associados ao ID do cliente.</p>
      *
-     * @param clienteId identificador único do cliente
-     * @param checkoutList lista de checkouts do cliente
-     * @return o valor total acumulado das estadias do cliente
+     * @param checkinId ID do checkin do cliente
+     * @return o valor total das estadias em BigDecimal
      */
     @Override
-    public BigDecimal calcularTotalEstadias(Long clienteId, List<Checkout> checkoutList) {
-        checkoutsProcessadosPorCliente.putIfAbsent(clienteId, new HashSet<>());
-        Set<Long> checkoutsProcessados = checkoutsProcessadosPorCliente.get(clienteId);
+    public BigDecimal calcularValorEstadia(Long checkinId) {
+        Checkin checkin = checkinService.findById(checkinId);
+        LocalDateTime dataEntrada = checkin.getDataEntrada();
+        LocalDateTime dataSaida = LocalDateTime.now();
+        boolean adicionalVeiculo = checkin.isAdicionalVeiculo();
+        long diasTotais = ChronoUnit.DAYS.between(dataEntrada.toLocalDate(), dataSaida.toLocalDate());
+        long finaisDeSemana = contarFinaisDeSemana(dataEntrada, dataSaida);
+        long diasUteis = diasTotais - finaisDeSemana;
+        boolean diariaAdicional = checarHoraSaida(dataSaida);
 
-        BigDecimal totalAtual = totalPorCliente.getOrDefault(clienteId, BigDecimal.ZERO);
 
-        for (Checkout checkout : checkoutList) {
-            if (!checkoutsProcessados.contains(checkout.getId())) {
-                totalAtual = totalAtual.add(checkout.getValorTotal());
-                checkoutsProcessados.add(checkout.getId());
-            }
+        BigDecimal valorUtil, valorFimDeSemana;
+        BigDecimal total = new BigDecimal(0);
+
+        if(adicionalVeiculo){
+             valorUtil = BigDecimal.valueOf(140);
+             valorFimDeSemana = BigDecimal.valueOf(170);
+        } else {
+             valorUtil = BigDecimal.valueOf(120);
+             valorFimDeSemana = BigDecimal.valueOf(150);
         }
+        total = total.add(BigDecimal.valueOf(diasUteis).multiply(valorUtil));
+        total = total.add(BigDecimal.valueOf(finaisDeSemana).multiply(valorFimDeSemana));
+        if (diariaAdicional) {
+            total = total.add(BigDecimal.valueOf(100));
+        }
+        return total;
+    }
 
-        totalPorCliente.put(clienteId, totalAtual);
-        return totalAtual;
+    @Override
+    public BigDecimal calcularTotalEstadias(Long clienteId, List<Checkout> checkouts) {
+        return checkouts.stream()
+                .map(Checkout::getValorTotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
     }
 }
+
+
+
 

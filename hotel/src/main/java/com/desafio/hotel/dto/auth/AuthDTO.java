@@ -14,7 +14,7 @@ package com.desafio.hotel.dto.auth;
  * @since 1.0
  */
 public record AuthDTO(
-        String password,
-        String login
+        String login,
+        String password
 ) {
 }

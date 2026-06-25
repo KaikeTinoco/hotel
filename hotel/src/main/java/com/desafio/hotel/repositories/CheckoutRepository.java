@@ -33,4 +33,6 @@ public interface CheckoutRepository extends JpaRepository<Checkout, Long> {
      */
     Optional<List<Checkout>> findByCheckinId(Long checkinId);
 
+    List<Checkout> findByCheckinGuestId(Long guestId);
+
 }

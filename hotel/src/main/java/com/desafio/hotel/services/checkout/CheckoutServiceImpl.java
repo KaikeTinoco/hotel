@@ -76,8 +76,7 @@ public class CheckoutServiceImpl implements CheckoutService {
             Checkout checkout = new Checkout();
             checkout.setCheckin(checkin);
             checkout.setDataSaida(LocalDateTime.now());
-            BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(checkin.getDataEntrada(),
-                    LocalDateTime.now(), checkin.isAdicionalVeiculo());
+            BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(id);
             checkout.setValorTotal(valorTotal);
             guest.setDentroHotel(false);
             repository.save(checkout);
@@ -131,6 +130,11 @@ public class CheckoutServiceImpl implements CheckoutService {
         return getResponseDTOS(false);
     }
 
+    @Override
+    public List<Checkout> listarTodosCheckoutsDoCliente(Long clientId) {
+        return repository.findByCheckinGuestId(clientId);
+    }
+
     /**
      * Método auxiliar para construir a resposta de hóspedes.
      *
@@ -160,8 +164,14 @@ public class CheckoutServiceImpl implements CheckoutService {
                             .build();
                     response.add(responseDTO);
                 }else{
-                    valorGastoTotal = calculoEstadiaService.calcularTotalEstadias(guest.getId(),todosCheckouts);
-                    valorGastoAtual = todosCheckouts.get(todosCheckouts.size() - 1).getValorTotal();
+                    valorGastoTotal = calculoEstadiaService.calcularTotalEstadias(guest.getId(),
+                            listarTodosCheckoutsDoCliente(guest.getId()));
+                    if(todosCheckouts.size() == 1){
+                        valorGastoAtual = todosCheckouts.get(0).getValorTotal();
+                    } else {
+                        valorGastoAtual = todosCheckouts.get(todosCheckouts.size() - 1).getValorTotal();
+                    }
+
                     ResponseDTO responseDTO = ResponseDTO.builder()
                             .guest(guest)
                             .totalHospedagens(valorGastoTotal)
