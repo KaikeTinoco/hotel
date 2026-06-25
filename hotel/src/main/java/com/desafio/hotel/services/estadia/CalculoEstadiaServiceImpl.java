@@ -38,11 +38,9 @@ import java.util.*;
 public class CalculoEstadiaServiceImpl implements CalculoEstadiaService {
 
 
-    private final CheckoutServiceImpl checkoutService;
     private final CheckinServiceImpl checkinService;
     @Autowired
-    public CalculoEstadiaServiceImpl(CheckoutServiceImpl checkoutService, CheckinServiceImpl checkinService) {
-        this.checkoutService = checkoutService;
+    public CalculoEstadiaServiceImpl(CheckinServiceImpl checkinService) {
         this.checkinService = checkinService;
     }
 

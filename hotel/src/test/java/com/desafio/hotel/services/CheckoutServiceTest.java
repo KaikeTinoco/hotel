@@ -145,6 +145,8 @@ class CheckoutServiceTest {
                 .thenReturn(Arrays.asList(hospede));
         Mockito.when(checkoutService.listarTodosCheckoutsDoCliente(hospede.getId())).thenReturn(checkouts);
         Mockito.when(checkoutRepository.findByCheckinId(hospede.getId()))
+                .thenReturn(Optional.of(checkouts));
+        Mockito.when(checkoutRepository.findByCheckinId(hospede.getId()))
                 .thenReturn(Optional.of(Arrays.asList(checkout)));
         Mockito.when(calculoEstadiaService.calcularTotalEstadias(hospede.getId(), checkouts))
                 .thenReturn(BigDecimal.valueOf(100));
@@ -165,6 +167,8 @@ class CheckoutServiceTest {
         Mockito.when(guestService.buscarHospedeDentroOuForaHotel(false))
                 .thenReturn(Arrays.asList(hospede));
         Mockito.when(checkoutService.listarTodosCheckoutsDoCliente(hospede.getId())).thenReturn(checkouts);
+        Mockito.when(checkoutRepository.findByCheckinId(hospede.getId()))
+                .thenReturn(Optional.of(checkouts));
         Mockito.when(checkoutRepository.findByCheckinId(hospede.getId()))
                 .thenReturn(Optional.of(Arrays.asList(checkout)));
         Mockito.when(calculoEstadiaService.calcularTotalEstadias(hospede.getId(), checkouts))

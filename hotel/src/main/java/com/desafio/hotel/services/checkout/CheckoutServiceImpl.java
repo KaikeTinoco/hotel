@@ -164,8 +164,14 @@ public class CheckoutServiceImpl implements CheckoutService {
                             .build();
                     response.add(responseDTO);
                 }else{
-                    valorGastoTotal = calculoEstadiaService.calcularTotalEstadias(guest.getId(), listarTodosCheckoutsDoCliente(guest.getId()));
-                    valorGastoAtual = todosCheckouts.get(todosCheckouts.size() - 1).getValorTotal();
+                    valorGastoTotal = calculoEstadiaService.calcularTotalEstadias(guest.getId(),
+                            listarTodosCheckoutsDoCliente(guest.getId()));
+                    if(todosCheckouts.size() == 1){
+                        valorGastoAtual = todosCheckouts.get(0).getValorTotal();
+                    } else {
+                        valorGastoAtual = todosCheckouts.get(todosCheckouts.size() - 1).getValorTotal();
+                    }
+
                     ResponseDTO responseDTO = ResponseDTO.builder()
                             .guest(guest)
                             .totalHospedagens(valorGastoTotal)

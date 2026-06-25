@@ -26,7 +26,7 @@
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <imported>true</imported>
-      <remarks>/home/kaikdev/IdeaProjects/hotel/hotel/src/main/resources/application.properties</remarks>
+      <remarks>C:/Users/kaike.nantes/Desktop/hotel/hotel/src/main/resources/application.properties</remarks>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
       <jdbc-url>jdbc:postgresql://postgres:5432/hotel_db</jdbc-url>
       <jdbc-additional-properties>
