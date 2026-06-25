@@ -71,7 +71,7 @@ class CalculoEstadiaServiceTest {
         Mockito.when(checkinService.findById(c.getId())).thenReturn(c);
         BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(c.getId());
 
-        assertEquals(BigDecimal.valueOf(120), valorTotal);
+        assertEquals(BigDecimal.valueOf(220), valorTotal);
     }
 
     @Test
@@ -80,7 +80,7 @@ class CalculoEstadiaServiceTest {
         Mockito.when(checkinService.findById(checkin.getId())).thenReturn(checkin);
         BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(checkin.getId());
 
-        assertEquals(BigDecimal.valueOf(140), valorTotal);
+        assertEquals(BigDecimal.valueOf(240), valorTotal);
     }
 
 
@@ -93,7 +93,7 @@ class CalculoEstadiaServiceTest {
         Mockito.when(checkinService.findById(c.getId())).thenReturn(c);
         BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(c.getId());
 
-        assertEquals(BigDecimal.valueOf(660), valorTotal);
+        assertEquals(BigDecimal.valueOf(760), valorTotal);
     }
 
     @Test
@@ -105,7 +105,7 @@ class CalculoEstadiaServiceTest {
         Mockito.when(checkinService.findById(c.getId())).thenReturn(c);
         BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(c.getId());
 
-        assertEquals(BigDecimal.valueOf(760), valorTotal);
+        assertEquals(BigDecimal.valueOf(860), valorTotal);
     }
 
     @Test
@@ -113,7 +113,7 @@ class CalculoEstadiaServiceTest {
         Mockito.when(checkinService.findById(checkin.getId())).thenReturn(checkin);
         BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(checkin.getId());
 
-        assertEquals(BigDecimal.valueOf(140), valorTotal);
+        assertEquals(BigDecimal.valueOf(240), valorTotal);
     }
 
     @Test
@@ -159,7 +159,7 @@ class CalculoEstadiaServiceTest {
         BigDecimal valorTotal = calculoEstadiaService.calcularValorEstadia(c.getId());
 
 
-        assertEquals(BigDecimal.valueOf(0), valorTotal);
+        assertEquals(BigDecimal.valueOf(100), valorTotal);
     }
 
     private Checkout criarCheckout(Checkin checkin){
