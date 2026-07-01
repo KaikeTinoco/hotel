@@ -1,15 +1,14 @@
 package com.desafio.hotel.entity.checkin;
 
 import com.desafio.hotel.entity.guest.Guest;
+import com.desafio.hotel.entity.reservation.Reservation;
 import jakarta.persistence.*;
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -39,6 +38,9 @@ public class Checkin {
     @ManyToOne
     private Guest guest;
 
+    @NotNull(message = "quantidadePessoas não pode estar vazio!")
+    private int quantidadePessoas;
+
     /** Data e hora de entrada do hóspede */
     @NotNull(message = "dataEntrada não pode estar vazio!")
     private LocalDateTime dataEntrada;
@@ -47,5 +49,7 @@ public class Checkin {
     @NotNull(message = "adicionalVeiculo não pode estar vazio!")
     private boolean adicionalVeiculo;
 
-
+    @OneToOne
+    @JoinColumn(name = "reservation_id", unique = true)
+    private Reservation reservation;
 }
